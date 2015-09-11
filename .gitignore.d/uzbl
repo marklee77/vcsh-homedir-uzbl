@@ -1,0 +1,13 @@
+*
+!.config
+!.config/mr
+!.config/mr/config.d
+!.config/mr/config.d/uzbl
+!.config/uzbl
+!.config/uzbl/*
+!.gitignore.d
+!.gitignore.d/uzbl
+!.local
+!.local/share
+!.local/share/uzbl
+!.local/share/uzbl/*
