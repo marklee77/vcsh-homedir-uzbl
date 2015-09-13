@@ -462,3 +462,5 @@ sync_spawn_exec @scripts_dir/load_cookies.sh @data_home/uzbl/session-cookies.txt
 set uri = uzbl.org/doesitwork/@COMMIT
 
 # vim: set fdm=syntax:
+
+@cbind !lpaf = script .local/share/uzbl/scripts/lastpass_autofill.js
