@@ -16,7 +16,7 @@ uzbl.formfiller = {
     ,
 
     dump: function() {
-        var rv = '';
+        var rv = {};
         var allFrames = new Array(window);
 
         for ( var f = 0; f < window.frames.length; ++f ) {
@@ -33,9 +33,9 @@ uzbl.formfiller = {
                         continue
                     }
                     if ( uzbl.formfiller.inputTypeIsText(input.type) ) {
-                        rv += '%' + escape(input.name) + '(' + input.type + '):' + input.value + '\n';
+                        rv[input.name] = [ input.type, input.value ];
                     } else if ( input.type == 'checkbox' || input.type == 'radio' ) {
-                        rv += '%' + escape(input.name) + '(' + input.type + '){' + escape(input.value) + '}:' + (input.checked?'1':'0') + '\n';
+                        rv[input.name] = [ input.type, input.value, input.checked?1:0];
                     }
                 }
 
@@ -45,12 +45,12 @@ uzbl.formfiller = {
                     if ( ! textarea.name ) {
                         continue
                     }
-                    rv += '%' + escape(textarea.name) + '(textarea):\n' + textarea.value.replace(/(^|\n)\\/g,"$1\\\\").replace(/(^|\n)%/g,"$1\\%") + '\n%\n';
+                    rv[textarea.name] = [ 'textarea', textarea.value ];
                 }
             }
             catch (err) { }
         }
-        return 'formfillerstart\n' + rv + '%!end';
+        return JSON.stringify(rv);
     }
 
     ,
