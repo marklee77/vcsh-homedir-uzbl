@@ -16,19 +16,20 @@ uzbl.formfiller = {
     ,
 
     dump: function() {
-        var rv = {};
+        var retval = {};
         var allFrames = new Array(window);
 
-        for ( var f = 0; f < window.frames.length; ++f ) {
-            allFrames.push(window.frames[f]);
+        for (var i = 0; i < window.frames.length; ++i) {
+            allFrames.push(window.frames[i]);
         }
 
-        for ( var j = 0; j < allFrames.length; ++j ) {
+        for (var i = 0; i < allFrames.length; ++i) {
             try {
-                var inputs = allFrames[j].document.getElementsByTagName("input");
+                var forms = allFrames[i].document.getElementsByTagName('form');
 
-                for( var k = 0; k < inputs.length; ++k ) {
-                    var input = inputs[k];
+                for( var j = 0; j < forms.length; ++j ) {
+                    var form = forms[j];
+                    
                     if ( ! input.name ) {
                         continue
                     }
