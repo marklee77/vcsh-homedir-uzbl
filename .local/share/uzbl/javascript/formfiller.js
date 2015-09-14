@@ -16,38 +16,33 @@ uzbl.formfiller = {
     ,
 
     dump: function() {
-        var retval = {};
+        var retval = [];
         var allFrames = new Array(window);
 
-        for (var i = 0; i < window.frames.length; ++i) {
+        for (var i = 0; i < window.frames.length; i++) {
             allFrames.push(window.frames[i]);
         }
 
-        for (var i = 0; i < allFrames.length; ++i) {
+        for (var i = 0; i < allFrames.length; i++) {
             try {
                 var forms = allFrames[i].document.getElementsByTagName('form');
-
-                for( var j = 0; j < forms.length; ++j ) {
+                for(var j = 0; j < forms.length; j++) {
                     var form = forms[j];
-                    
-                    if ( ! input.name ) {
-                        continue
+                    retval.push({'name': form.name})
+                    /*
+                    for(var k = 0; k < form.elements.length; k++) {
+                        var element = form.elements[k];
+                        retval[j].push({
+                            'name': element.name, 
+                            'type': element.type, 
+                            'value': element.value});
+                        if (element.type == 'checkbox' || element.type == 'radio' ) {
+                            retval[j][k]['checked'] = input.checked?1:0];
+                        }
                     }
-                    if ( uzbl.formfiller.inputTypeIsText(input.type) ) {
-                        rv[input.name] = [ input.type, input.value ];
-                    } else if ( input.type == 'checkbox' || input.type == 'radio' ) {
-                        rv[input.name] = [ input.type, input.value, input.checked?1:0];
-                    }
+                    */
                 }
 
-                var textareas = allFrames[j].document.getElementsByTagName("textarea");
-                for( var k = 0; k < textareas.length; ++k ) {
-                    var textarea = textareas[k];
-                    if ( ! textarea.name ) {
-                        continue
-                    }
-                    rv[textarea.name] = [ 'textarea', textarea.value ];
-                }
             }
             catch (err) { }
         }
