@@ -66,7 +66,7 @@ set download_handler    = sync_spawn @scripts_dir/download.sh
 # Load commit handlers
 @on_event   LOAD_COMMIT    @set_status <span foreground="green">recv</span>
 
-  # add some javascript to the page for other 'js' and 'script' commands to access later.
+# add some javascript to the page for other 'js' and 'script' commands to access later.
 @on_event   LOAD_COMMIT    js uzbl = {};
 @on_event   LOAD_COMMIT    script @scripts_dir/formfiller.js
 @on_event   LOAD_COMMIT    script @scripts_dir/follow.js
@@ -377,11 +377,14 @@ set follow_hint_keys = 0123456789
 # fields (eg login information) and to fill in these values automatically.
 # This implementation allows you to save multiple profiles for each form
 # (think about multiple accounts on some website).
-set formfiller = spawn @scripts_dir/formfiller.sh
-@cbind  ze  = @formfiller edit
-@cbind  zn  = @formfiller new
-@cbind  zl  = @formfiller load
-@cbind  zo  = @formfiller once
+#set formfiller = spawn @scripts_dir/formfiller.sh
+#@cbind  ze  = @formfiller edit
+#@cbind  zn  = @formfiller new
+#@cbind  zl  = @formfiller load
+#@cbind  zo  = @formfiller once
+@cbind zl spawn /home/mark/.local/share/uzbl/scripts/formfiller.sh load
+@cbind zn spawn /home/mark/.local/share/uzbl/scripts/formfiller.sh new
+@cbind ze spawn /home/mark/.local/share/uzbl/scripts/formfiller.sh edit
 
 # --- Uzbl tabbed binds ------------------------------------------------------
 
@@ -463,6 +466,4 @@ set uri = uzbl.org/doesitwork/@COMMIT
 
 # vim: set fdm=syntax:
 
-@bind LL spawn /home/mark/.local/share/uzbl/scripts/paranoid_formfiller.pl load
-@bind LN spawn /home/mark/.local/share/uzbl/scripts/paranoid_formfiller.pl new
-@bind LE spawn /home/mark/.local/share/uzbl/scripts/paranoid_formfiller.pl edit
+
