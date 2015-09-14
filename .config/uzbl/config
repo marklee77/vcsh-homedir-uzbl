@@ -463,4 +463,6 @@ set uri = uzbl.org/doesitwork/@COMMIT
 
 # vim: set fdm=syntax:
 
-@cbind LL 
+@bind LL spawn /home/mark/.local/share/uzbl/scripts/paranoid_formfiller.pl load
+@bind LN spawn /home/mark/.local/share/uzbl/scripts/paranoid_formfiller.pl new
+@bind LE spawn /home/mark/.local/share/uzbl/scripts/paranoid_formfiller.pl edit
