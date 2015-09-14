@@ -68,7 +68,7 @@ set download_handler    = sync_spawn @scripts_dir/download.sh
 
 # add some javascript to the page for other 'js' and 'script' commands to access later.
 @on_event   LOAD_COMMIT    js uzbl = {};
-@on_event   LOAD_COMMIT    script @scripts_dir/formfiller.js
+@on_event   LOAD_COMMIT    script @data_home/uzbl/javascript/formfiller.js
 @on_event   LOAD_COMMIT    script @scripts_dir/follow.js
 
 # Userscripts/per-site-settings. See the script and the example configuration for details
@@ -377,12 +377,12 @@ set follow_hint_keys = 0123456789
 # fields (eg login information) and to fill in these values automatically.
 # This implementation allows you to save multiple profiles for each form
 # (think about multiple accounts on some website).
-set formfiller = spawn @scripts_dir/formfiller.sh
-@cbind  ze  = @formfiller edit
-@cbind  zn  = @formfiller new
-@cbind  zl  = @formfiller load
-@cbind  zo  = @formfiller once
-@cbind  zt  = spawn @scripts_dir/test.py
+#set formfiller = spawn @scripts_dir/formfiller.sh
+#@cbind  ze  = @formfiller edit
+#@cbind  zn  = @formfiller new
+#@cbind  zl  = @formfiller load
+#@cbind  zo  = @formfiller once
+@cbind  zs  = spawn @data_home/uzbl/scripts/formfiller.py
 
 # --- Uzbl tabbed binds ------------------------------------------------------
 
