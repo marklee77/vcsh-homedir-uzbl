@@ -13,3 +13,4 @@
 !.local/share/uzbl/*
 !.local/share/uzbl/javascript/*
 !.local/share/uzbl/scripts/*
+.*.swp
