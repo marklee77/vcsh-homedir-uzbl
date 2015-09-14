@@ -463,4 +463,4 @@ set uri = uzbl.org/doesitwork/@COMMIT
 
 # vim: set fdm=syntax:
 
-@cbind !lpaf = script .local/share/uzbl/scripts/lastpass_autofill.js
+@cbind LL 
