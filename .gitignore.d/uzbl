@@ -11,4 +11,5 @@
 !.local/share
 !.local/share/uzbl
 !.local/share/uzbl/*
+!.local/share/uzbl/javascript/*
 !.local/share/uzbl/scripts/*
