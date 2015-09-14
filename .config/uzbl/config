@@ -382,6 +382,7 @@ set formfiller = spawn @scripts_dir/formfiller.sh
 @cbind  zn  = @formfiller new
 @cbind  zl  = @formfiller load
 @cbind  zo  = @formfiller once
+@cbind  zt  = spawn @scripts_dir/test.py
 
 # --- Uzbl tabbed binds ------------------------------------------------------
 
