@@ -31,16 +31,15 @@ uzbl.formfiller = {
                     formdata = {'name': form.name, 'elements': []}
                     for(var k = 0; k < form.elements.length; k++) {
                         var element = form.elements[k];
-                        if (element.name != '') {
-                            elementdata = {'name': element.name, 
-                                           'type': element.type, 
-                                           'value': element.value});
-                            if (['checkbox', 'radio'].indexOf(element.type) > -1
-                        /*
-                        if (element.type == 'checkbox' || element.type == 'radio' ) {
-                            retval[j]['elements'][k]['checked'] = input.checked?1:0];
+                        if (element.name == '') continue;
+                        elementdata = {'name': element.name, 
+                                       'type': element.type, 
+                                       'value': element.value};
+                        if (['checkbox', 'radio'].indexOf(element.type) > -1) {
+                            //elementdata['checked'] = element.checked ? 1 : 0];
+                            elementdata['checked'] = element.checked;
                         }
-                        */
+                        formdata['elements'].push(elementdata)
                     }
                     retval.push(formdata)
                 }
