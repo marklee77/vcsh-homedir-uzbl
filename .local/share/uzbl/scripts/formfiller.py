@@ -17,15 +17,32 @@ gpg = gnupg.GPG()
 
 
 def load_data(filepath):
-    pass
+    data = {}
+    try:
+        data = yaml.load(str(gpg.decrypt_file(open(filepath, 'r'))))
+    except:
+        pass
+    return data
 
 
 def store_data(filepath, data):
-    pass
+
+    success = False
+    try:
+        yaml_data = yaml.dump(data, width=79, indent=2, 
+                              default_flow_style=False, explicit_start=True)
+        encrypted_data = str(gpg.encrypt(yaml_data, 'mark@stillwell.me'))
+        f = open(os.path.join(filepath), 'w')
+        f.write(encrypted_data)
+        f.close()
+        success = True
+    except:
+        pass
+
+    return success
 
 
 def send_javascript(script):
-    import json
     import socket
     retval = None
     try:
@@ -52,47 +69,31 @@ def update_window_form_data():
 
 def main(argv=None):
 
-    # parse uri for information needed to load/update/save site data
-    window_uri = os.getenv('UZBL_URI', 'noproto://undefined')
-    urlparse_result = urlparse(window_uri)
-
-    filepath = os.path.join(uzbl_forms_dir, urlparse_result.hostname + '.yml.asc'
-
-    window_urlpath = urlparse_result.path
-    if window_urlpath is None or window_urlpath == '':
-        window_urlpath = '/'
-
-    # get data from uzbl window
-    dump_data = dump_window_form_data()
-
-    # update site data
-    data = {}
-    try:
-        formfile = open(os.path.join(uzbl_forms_dir, hostname + '.yml.asc'),
-                        'r')
-        data = yaml.load(str(gpg.decrypt_file(formfile)))
-    except:
-        pass
-    data[path] = dump_data
-
-    # save site form data
-    yaml_data = yaml.dump(data, width=79, indent=2, default_flow_style=False,
-                          explicit_start=True)
-    encrypted_data = str(gpg.encrypt(yaml_data, 'mark@stillwell.me'))
-
+    # ensure that forms directory exists and has secure permissions
     try:
         os.makedirs(uzbl_forms_dir, 0700)
     except OSError:
         os.chmod(uzbl_forms_dir, 0700)
 
-    try:
-        formfile = open(os.path.join(uzbl_forms_dir, hostname + '.yml.asc'),
-                        'w')
-        formfile.write(encrypted_data)
-        formfile.close()
-    except:
-        pass
+    # parse uri for information needed to load/update/save site data
+    window_uri = os.getenv('UZBL_URI', 'noproto://undefined')
+    urlparse_result = urlparse(window_uri)
+    window_hostname = urlparse_result.hostname
+    window_urlpath = urlparse_result.path
+    if window_urlpath is None or window_urlpath == '':
+        window_urlpath = '/'
 
+    # generate file path for current uzbl window
+    filepath = os.path.join(uzbl_forms_dir, window_hostname + '.yml.asc')
+
+    # get data from uzbl window
+    window_form_data = dump_window_form_data()
+
+    # update site data
+    data = load_data(filepath)
+    data[window_urlpath] = window_form_data
+
+    # save site form data
     return 0
 
 
