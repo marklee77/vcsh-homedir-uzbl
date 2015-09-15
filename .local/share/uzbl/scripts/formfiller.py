@@ -27,7 +27,7 @@ def load_data(filepath):
     return data
 
 
-def store_data(filepath, data):
+def store_data(filepath, data, keys):
 
     if not data:
         return True
@@ -36,7 +36,7 @@ def store_data(filepath, data):
     try:
         ydata = yaml.dump(data, default_flow_style=False, explicit_start=True)
         f = open(filepath, 'w')
-        f.write(str(gpg.encrypt(ydata, 'mark@stillwell.me')))
+        f.write(str(gpg.encrypt(ydata, keys)))
         f.close()
         success = True
     except:
@@ -77,7 +77,7 @@ def load_action(filepath, window_urlpath):
     return update_window_form_data(load_data(filepath))
 
 
-def store_action(filepath, window_urlpath):
+def store_action(filepath, window_urlpath, keys):
 
     # load data from file
     data = load_data(filepath)
@@ -90,7 +90,7 @@ def store_action(filepath, window_urlpath):
         data[window_urlpath] = window_form_data
 
     # save site form data and return result
-    retval = store_data(filepath, data)
+    retval = store_data(filepath, data, keys)
 
     if retval:
         notify_user('forms saved successfully!')
@@ -129,7 +129,7 @@ def main(argv=None):
     if args.action == 'load':
         retval = load_action(filepath, window_urlpath)
     elif args.action == 'store':
-        retval = store_action(filepath, window_urlpath)
+        retval = store_action(filepath, window_urlpath, ['mark@stillwell.me'])
 
     return retval
 
