@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+# FIXME:
+#   - socket length
+#   - configuration file
+#   - match uri?
 import os
 import socket
 import sys
@@ -14,10 +18,6 @@ uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'forms')
 gpg = gnupg.GPG()
 
 
-# FIXME:
-#   - socket length
-#   - configuration file
-#   - match uri?
 def main(argv=None):
 
     try:
