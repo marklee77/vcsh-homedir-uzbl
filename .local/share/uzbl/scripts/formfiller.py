@@ -138,7 +138,9 @@ def main(argv=None):
     if args.action == 'load':
         retval = load_action(filepath, window_urlpath)
     elif args.action == 'store':
-        retval = store_action(filepath, window_urlpath, ['mark@stillwell.me'])
+        if args.recipient is None or len(args.recipient) < 1:
+            print "at least one recipient required to store!"
+        retval = store_action(filepath, window_urlpath, args.recipient)
 
     return retval
 
