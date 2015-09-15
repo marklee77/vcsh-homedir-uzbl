@@ -18,6 +18,22 @@ uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'forms')
 gpg = gnupg.GPG()
 
 
+def load_data():
+    pass
+
+
+def store_data():
+    pass
+
+
+def send_javascript():
+    pass
+
+
+def dump_window_form_data():
+    pass
+
+
 def main(argv=None):
 
     try:
