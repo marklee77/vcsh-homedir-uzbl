@@ -11,6 +11,7 @@ import yaml
 
 
 uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'forms')
+gpg = gnupg.GPG()
 
 
 # FIXME:
@@ -23,6 +24,21 @@ def main(argv=None):
         os.makedirs(uzbl_forms_dir, 0700)
     except OSError:
         os.chmod(uzbl_forms_dir, 0700)
+
+    uri = os.getenv('UZBL_URI', 'noproto://undefined')
+    urlparse_result = urlparse(uri)
+    hostname = urlparse_result.hostname
+    path = urlparse_result.path
+    if path is None or path == '':
+        path = '/'
+
+    data = {}
+    try:
+        formfile = open(os.path.join(uzbl_forms_dir, hostname + '.yml.asc'),
+                        'r')
+        data = yaml.load(str(gpg.decrypt_file(formfile)))
+    except:
+        pass
 
     response = ''
     try:
@@ -37,16 +53,10 @@ def main(argv=None):
     message, json_dump_data = response.split('\n', 1)
     dump_data = yaml.load(json_dump_data)
 
-    uri = os.getenv('UZBL_URI', 'noproto://undefined')
-    urlparse_result = urlparse(uri)
-    hostname = urlparse_result.hostname
-    path = urlparse_result.path
-
-    data = {path: dump_data}
+    data[path] = dump_data
 
     yaml_data = yaml.dump(data, width=79, indent=2, default_flow_style=False,
                           explicit_start=True)
-    gpg = gnupg.GPG()
     encrypted_data = str(gpg.encrypt(yaml_data, 'mark@stillwell.me'))
 
     try:
