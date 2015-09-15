@@ -4,6 +4,7 @@
 #   - configuration file
 #   - notify user
 #   - default recipient?
+#   - keep recipients on reencode
 import os
 import socket
 import sys
@@ -68,6 +69,10 @@ def update_window_form_data(data):
     return 0
 
 
+def notify_user(message):
+    send_javascript('alert("{}")'.format(message))
+
+
 def load_action(filepath, window_urlpath):
     return update_window_form_data(load_data(filepath))
 
@@ -85,7 +90,12 @@ def store_action(filepath, window_urlpath):
         data[window_urlpath] = window_form_data
 
     # save site form data and return result
-    return store_data(filepath, data)
+    retval = store_data(filepath, data)
+
+    if retval:
+        notify_user('forms saved successfully!')
+
+    return retval
 
 
 def main(argv=None):
