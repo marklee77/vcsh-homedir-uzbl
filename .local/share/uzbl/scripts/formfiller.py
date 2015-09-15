@@ -3,6 +3,7 @@
 #   - socket length
 #   - configuration file
 #   - notify user
+#   - default recipient?
 import os
 import socket
 import sys
@@ -63,12 +64,12 @@ def dump_window_form_data():
     return send_javascript('uzbl.formfiller.dump();')
 
 
-def update_window_form_data():
-    pass
+def update_window_form_data(data):
+    return 0
 
 
 def load_action(filepath, window_urlpath):
-    pass
+    return update_window_form_data(load_data(filepath))
 
 
 def store_action(filepath, window_urlpath):
@@ -108,9 +109,19 @@ def main(argv=None):
     # generate file path for current uzbl window
     filepath = os.path.join(uzbl_forms_dir, window_hostname + '.yml.asc')
 
-    store_action(filepath, window_urlpath)
+    parser = ArgumentParser(description='form filler for uzbl')
+    parser.add_argument('action', help='action to perform',
+                        choices=['load', 'store'])
 
-    return 0
+    args = parser.parse_args()
+
+    retval = True
+    if args.action == 'load':
+        retval = load_action(filepath, window_urlpath)
+    elif args.action == 'store':
+        retval = store_action(filepath, window_urlpath)
+
+    return retval
 
 
 if __name__ == "__main__":
