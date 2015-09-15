@@ -52,16 +52,18 @@ def update_window_form_data():
 
 def main(argv=None):
 
+    # parse uri for information needed to load/update/save site data
+    window_uri = os.getenv('UZBL_URI', 'noproto://undefined')
+    urlparse_result = urlparse(window_uri)
+
+    filepath = os.path.join(uzbl_forms_dir, urlparse_result.hostname + '.yml.asc'
+
+    window_urlpath = urlparse_result.path
+    if window_urlpath is None or window_urlpath == '':
+        window_urlpath = '/'
+
     # get data from uzbl window
     dump_data = dump_window_form_data()
-
-    # parse uri for information needed to load/update/save site data
-    uri = os.getenv('UZBL_URI', 'noproto://undefined')
-    urlparse_result = urlparse(uri)
-    hostname = urlparse_result.hostname
-    path = urlparse_result.path
-    if path is None or path == '':
-        path = '/'
 
     # update site data
     data = {}
