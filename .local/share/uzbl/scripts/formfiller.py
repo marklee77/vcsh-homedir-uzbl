@@ -5,14 +5,10 @@
 #   - match uri?
 import os
 import sys
-from urlparse import urlparse
-
-from xdg.BaseDirectory import xdg_data_home
 
 import gnupg
 import yaml
 
-uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'forms')
 gpg = gnupg.GPG()
 
 
@@ -26,13 +22,12 @@ def load_data(filepath):
 
 
 def store_data(filepath, data):
-
     success = False
     try:
-        yaml_data = yaml.dump(data, width=79, indent=2, 
+        yaml_data = yaml.dump(data, width=79, indent=2,
                               default_flow_style=False, explicit_start=True)
         encrypted_data = str(gpg.encrypt(yaml_data, 'mark@stillwell.me'))
-        f = open(os.path.join(filepath), 'w')
+        f = open(filepath, 'w')
         f.write(encrypted_data)
         f.close()
         success = True
@@ -68,6 +63,10 @@ def update_window_form_data():
 
 
 def main(argv=None):
+    from urlparse import urlparse
+    from xdg.BaseDirectory import xdg_data_home
+
+    uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'forms')
 
     # ensure that forms directory exists and has secure permissions
     try:
@@ -91,9 +90,12 @@ def main(argv=None):
 
     # update site data
     data = load_data(filepath)
-    data[window_urlpath] = window_form_data
+    if window_form_data is not None:
+        data[window_urlpath] = window_form_data
 
     # save site form data
+    store_data(filepath, data)
+
     return 0
 
 
