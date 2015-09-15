@@ -35,7 +35,7 @@ def send_javascript(script):
         response = s.recv(16384)
         s.close()
         _, js_retval = response.split('\n', 1)
-        retval = json.loads(js_retval)
+        retval = yaml.load(js_retval)
     except:
         pass
 
