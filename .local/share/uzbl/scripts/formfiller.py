@@ -4,12 +4,15 @@
 #   - configuration file
 #   - notify user
 import os
+import socket
 import sys
-
-import gnupg
 import yaml
 
-gpg = gnupg.GPG()
+from gnupg import GPG
+from urlparse import urlparse
+from xdg.BaseDirectory import xdg_data_home
+
+gpg = GPG()
 
 
 def load_data(filepath):
@@ -28,11 +31,10 @@ def store_data(filepath, data):
 
     success = False
     try:
-        yaml_data = yaml.dump(data, width=79, indent=2,
-                              default_flow_style=False, explicit_start=True)
-        encrypted_data = str(gpg.encrypt(yaml_data, 'mark@stillwell.me'))
+        ydata = yaml.dump(data, default_flow_style=False, explicit_start=True)
+        eydata = str(gpg.encrypt(ydata, 'mark@stillwell.me'))
         f = open(filepath, 'w')
-        f.write(encrypted_data)
+        f.write(eydata)
         f.close()
         success = True
     except:
@@ -42,7 +44,6 @@ def store_data(filepath, data):
 
 
 def send_javascript(script):
-    import socket
     retval = None
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -87,8 +88,6 @@ def store_action(filepath, window_urlpath):
 
 
 def main(argv=None):
-    from urlparse import urlparse
-    from xdg.BaseDirectory import xdg_data_home
 
     uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'forms')
 
