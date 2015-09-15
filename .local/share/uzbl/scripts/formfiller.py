@@ -22,6 +22,10 @@ def load_data(filepath):
 
 
 def store_data(filepath, data):
+
+    if not data:
+        return True
+
     success = False
     try:
         yaml_data = yaml.dump(data, width=79, indent=2,
@@ -62,6 +66,26 @@ def update_window_form_data():
     pass
 
 
+def load_action():
+    pass
+
+
+def store_action(filepath, window_urlpath):
+
+    # load data from file
+    data = load_data(filepath)
+
+    # get data from uzbl window
+    window_form_data = dump_window_form_data()
+
+    # update site data
+    if window_form_data is not None:
+        data[window_urlpath] = window_form_data
+
+    # save site form data and return result
+    return store_data(filepath, data)
+
+
 def main(argv=None):
     from urlparse import urlparse
     from xdg.BaseDirectory import xdg_data_home
@@ -85,16 +109,7 @@ def main(argv=None):
     # generate file path for current uzbl window
     filepath = os.path.join(uzbl_forms_dir, window_hostname + '.yml.asc')
 
-    # get data from uzbl window
-    window_form_data = dump_window_form_data()
-
-    # update site data
-    data = load_data(filepath)
-    if window_form_data is not None:
-        data[window_urlpath] = window_form_data
-
-    # save site form data
-    store_data(filepath, data)
+    store_action(filepath, window_urlpath)
 
     return 0
 
