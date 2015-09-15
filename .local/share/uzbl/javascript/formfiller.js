@@ -1,5 +1,6 @@
 uzbl.formfiller = {
 
+
     dump: function() {
         var data = [];
         var allFrames = new Array(window);
