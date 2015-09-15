@@ -28,18 +28,17 @@ uzbl.formfiller = {
                 var forms = allFrames[i].document.getElementsByTagName('form');
                 for(var j = 0; j < forms.length; j++) {
                     var form = forms[j];
-                    formdata = {'name': form.name, 'elements': []}
+                    formdata = {'name': form.name, 'elements': {}}
                     for(var k = 0; k < form.elements.length; k++) {
                         var element = form.elements[k];
                         if (element.name == '') continue;
-                        elementdata = {'name': element.name, 
-                                       'type': element.type, 
-                                       'value': element.value};
+                        formdata['elements'][element.name] = {
+                            'type': element.type, 
+                            'value': element.value};
                         if (['checkbox', 'radio'].indexOf(element.type) > -1) {
-                            //elementdata['checked'] = element.checked ? 1 : 0];
-                            elementdata['checked'] = element.checked;
+                            formdata['elements'][element.name]['checked'] = 
+                                element.checked;
                         }
-                        formdata['elements'].push(elementdata)
                     }
                     retval.push(formdata)
                 }

@@ -40,7 +40,8 @@ def main(argv=None):
     encrypted_data = str(gpg.encrypt(yaml_data, 'mark@stillwell.me'))
 
     try:
-        formfile = open(os.path.join(uzbl_forms_dir, hostname + '.asc'), 'w')
+        formfile = open(os.path.join(uzbl_forms_dir, hostname + '.yml.asc'),
+                        'w')
         formfile.write(encrypted_data)
         formfile.close()
     except:
