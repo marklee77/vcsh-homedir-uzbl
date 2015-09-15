@@ -8,6 +8,7 @@ import socket
 import sys
 import yaml
 
+from argparse import ArgumentParser
 from gnupg import GPG
 from urlparse import urlparse
 from xdg.BaseDirectory import xdg_data_home
@@ -32,9 +33,8 @@ def store_data(filepath, data):
     success = False
     try:
         ydata = yaml.dump(data, default_flow_style=False, explicit_start=True)
-        eydata = str(gpg.encrypt(ydata, 'mark@stillwell.me'))
         f = open(filepath, 'w')
-        f.write(eydata)
+        f.write(str(gpg.encrypt(ydata, 'mark@stillwell.me')))
         f.close()
         success = True
     except:
