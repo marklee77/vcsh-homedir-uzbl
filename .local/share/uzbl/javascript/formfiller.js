@@ -2,83 +2,75 @@ uzbl.formfiller = {
 
     getForms: function() {
         var forms = new Array();
-        var frames = new Array(window).concat(window.frames);
+
+        var frames = new Array(window);
+        for (var i = 0; i < window.frames.length; i++) {
+            frames.push(window.frames[i]);
+        }
+
+        for (var i = 0; i < frames.length; i++) {
+            try {
+                frameForms = frames[i].document.getElementsByTagName('form');
+                for (var j = 0; j < frameForms.length; j++) {
+                    forms.push(frameForms[j]);
+                }
+            }
+            catch (err) { }
+        }
+
+        return forms;
     },
 
     dump: function() {
-        var data = [];
-        var allFrames = new Array(window);
+        var allFormsData = [];
+        var forms = this.getForms();
 
-        for (var i = 0; i < window.frames.length; i++) {
-            allFrames.push(window.frames[i]);
-        }
-
-        for (var i = 0; i < allFrames.length; i++) {
-            try {
-                var forms = allFrames[i].document.getElementsByTagName('form');
-                for(var j = 0; j < forms.length; j++) {
-                    var form = forms[j];
-                    forminfo = {'name': form.name, 'fields': []}
-                    for(var k = 0; k < form.elements.length; k++) {
-                        var element = form.elements[k];
-                        if (element.name == '') continue;
-                            elementinfo = { 'name': element.name, 
-                                            'type': element.type, 
-                                            'value': element.value};
-                        if (['checkbox', 'radio'].indexOf(element.type) > -1) {
-                            elementinfo['checked'] = element.checked;
-                        }
-                        forminfo['fields'].push(elementinfo)
-                    }
-                    data.push(forminfo)
+        for (var i = 0; i < forms.length; i++) {
+            var formData = {'name': forms[i].name, 'elements': []}
+            for(var j = 0; j < forms[i].elements.length; j++) {
+                var element = forms[i].elements[j];
+                if (element.name == '') continue;
+                elementData = {'name': element.name, 'type': element.type, 
+                               'value': element.value};
+                if (['checkbox', 'radio'].indexOf(element.type) > -1) {
+                    elementData['checked'] = element.checked;
                 }
-
+                formData['elements'].push(elementData)
             }
-            catch (err) { }
+            allFormsData.push(formData)
         }
-        return JSON.stringify(data);
+        return JSON.stringify(allFormsData);
     },
     
-    load: function(data) {
-        var allFrames = new Array(window);
+    load: function(allFormsData) {
+        var forms = this.getForms();
 
-        for (var i = 0; i < window.frames.length; i++) {
-            allFrames.push(window.frames[i]);
-        }
-
-        for (var i = 0; i < allFrames.length; i++) {
-            try {
-                var forms = allFrames[i].document.getElementsByTagName('form');
-            }
-            catch (err) { }
-        }
-    },
-
-    insert: function(fname, ftype, fvalue, fchecked) {
-        fname = unescape(fname);
-        var allFrames = new Array(window);
-        for ( var f = 0; f < window.frames.length; ++f ) {
-            allFrames.push(window.frames[f]);
-        }
-        for ( var j = 0; j < allFrames.length; ++j ) {
-            try {
-                if ( uzbl.formfiller.inputTypeIsText(ftype) || ftype == 'textarea' ) {
-                    allFrames[j].document.getElementsByName(fname)[0].value = fvalue;
-                }
-                else if ( ftype == 'checkbox' ) {
-                    allFrames[j].document.getElementsByName(fname)[0].checked = fchecked;
-                }
-                else if ( ftype == 'radio' ) {
-                    fvalue = unescape(fvalue);
-                    var radios = allFrames[j].document.getElementsByName(fname);
-                    for ( r=0; r<radios.length; ++r ) {
-                        if ( radios[r].value == fvalue ) {
-                            radios[r].checked = fchecked;
+        for (var i = 0; i < forms.length && i < allFormsData.length; i++) {
+            for (var j = 0; j < allFormsData[i].elements.length; j++) {
+                var elementData = allFormsData[i].elements[j];
+                if (['checkbox', 'radio'].indexOf(elementData.type) > -1) {
+                    var elements = forms[i].elements[elementData.name];
+                    // if elements is a singleton rather than a collection,
+                    // then wrap it in an array.
+                    if (!elements.length) {
+                        elements = [elements];
+                    }
+                    for (k = 0; k < elements.length; k++) {
+                        if (elements[k].value == elementData.value) {
+                            elements[k].checked = elementData.checked;
                         }
                     }
+                } else {
+                    // this bit of ugliness is because elements[name] might be a
+                    // collection if more than one element has the same name. In 
+                    // this case we just set the value of the first.
+                    var element = forms[i].elements[elementData.name];
+                    if (element.length) {
+                        element = element[0];
+                    } 
+                    element.value = elementData.value;
                 }
             }
-            catch (err) { }
         }
-    }
+    },
 }
