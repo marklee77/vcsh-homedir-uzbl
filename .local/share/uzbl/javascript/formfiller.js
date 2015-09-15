@@ -16,7 +16,7 @@ uzbl.formfiller = {
     ,
 
     dump: function() {
-        var retval = [];
+        var data = [];
         var allFrames = new Array(window);
 
         for (var i = 0; i < window.frames.length; i++) {
@@ -28,25 +28,25 @@ uzbl.formfiller = {
                 var forms = allFrames[i].document.getElementsByTagName('form');
                 for(var j = 0; j < forms.length; j++) {
                     var form = forms[j];
-                    formdata = {'name': form.name, 'elements': {}}
+                    formdata = {'name': form.name, 'fields': []}
                     for(var k = 0; k < form.elements.length; k++) {
                         var element = form.elements[k];
                         if (element.name == '') continue;
-                        formdata['elements'][element.name] = {
-                            'type': element.type, 
-                            'value': element.value};
+                            elementdata = { 'name': element.name, 
+                                            'type': element.type, 
+                                            'value': element.value};
                         if (['checkbox', 'radio'].indexOf(element.type) > -1) {
-                            formdata['elements'][element.name]['checked'] = 
-                                element.checked;
+                            elementdata['checked'] = element.checked;
                         }
+                        formdata['fields'].push(elementdata)
                     }
-                    retval.push(formdata)
+                    data.push(formdata)
                 }
 
             }
             catch (err) { }
         }
-        return JSON.stringify(retval);
+        return JSON.stringify(data);
     }
 
     ,
