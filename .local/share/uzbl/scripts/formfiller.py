@@ -5,6 +5,7 @@
 #   - notify user
 #   - default recipient?
 #   - keep recipients on reencode
+import json
 import os
 import socket
 import sys
@@ -50,7 +51,7 @@ def send_javascript(script):
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(os.environ.get('UZBL_SOCKET', None))
-        s.sendall('js ' + script + '\n')
+        s.sendall('js {};\n'.format(script))
         response = s.recv(16384)
         s.close()
         _, js_retval = response.split('\n', 1)
@@ -62,10 +63,11 @@ def send_javascript(script):
 
 
 def dump_window_form_data():
-    return send_javascript('uzbl.formfiller.dump();')
+    return send_javascript('uzbl.formfiller.dump()')
 
 
 def update_window_form_data(data):
+    send_javascript('uzbl.formfiller.load({})'.format(json.dumps(data)))
     return 0
 
 

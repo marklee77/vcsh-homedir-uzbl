@@ -33,6 +33,10 @@ uzbl.formfiller = {
         }
         return JSON.stringify(data);
     },
+    
+    load: function(data) {
+        alert(data);        
+    },
 
     insert: function(fname, ftype, fvalue, fchecked) {
         fname = unescape(fname);
