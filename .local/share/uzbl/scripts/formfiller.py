@@ -13,6 +13,10 @@ import yaml
 uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'forms')
 
 
+# FIXME:
+#   - socket length
+#   - configuration file
+#   - match uri?
 def main(argv=None):
 
     try:
@@ -30,13 +34,18 @@ def main(argv=None):
     except:
         pass
 
-    message, json_data = response.split('\n', 1)
-    data = yaml.load(json_data)
+    message, json_dump_data = response.split('\n', 1)
+    dump_data = yaml.load(json_dump_data)
+
+    uri = os.getenv('UZBL_URI', 'noproto://undefined')
+    urlparse_result = urlparse(uri)
+    hostname = urlparse_result.hostname
+    path = urlparse_result.path
+
+    data = {path: dump_data}
+
     yaml_data = yaml.dump(data, width=79, indent=2, default_flow_style=False,
                           explicit_start=True)
-
-    hostname = urlparse(os.getenv('UZBL_URI', 'http://undefined')).hostname
-
     gpg = gnupg.GPG()
     encrypted_data = str(gpg.encrypt(yaml_data, 'mark@stillwell.me'))
 
