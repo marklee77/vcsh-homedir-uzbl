@@ -2,7 +2,7 @@
 # FIXME:
 #   - socket length
 #   - configuration file
-#   - match uri?
+#   - notify user
 import os
 import sys
 
@@ -66,7 +66,7 @@ def update_window_form_data():
     pass
 
 
-def load_action():
+def load_action(filepath, window_urlpath):
     pass
 
 
