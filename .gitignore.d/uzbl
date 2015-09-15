@@ -11,6 +11,7 @@
 !.local/share
 !.local/share/uzbl
 !.local/share/uzbl/*
+.local/share/uzbl/cookies.txt
 .local/share/uzbl/session-cookies.txt
 !.local/share/uzbl/javascript/*
 !.local/share/uzbl/scripts/*
