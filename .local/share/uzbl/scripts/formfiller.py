@@ -12,38 +12,38 @@ from xdg.BaseDirectory import xdg_data_home
 import gnupg
 import yaml
 
-
 uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'forms')
 gpg = gnupg.GPG()
 
 
-def load_data():
+def load_data(filepath):
     pass
 
 
-def store_data():
+def store_data(filepath, data):
     pass
 
 
 def send_javascript(script):
+    import json
     import socket
-    response = ''
+    retval = None
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(os.environ.get('UZBL_SOCKET', None))
-        s.sendall(script + '\n')
+        s.sendall('js ' + script + '\n')
         response = s.recv(16384)
         s.close()
+        _, js_retval = response.split('\n', 1)
+        retval = json.loads(js_retval)
     except:
         pass
 
-    _, json = response.split('\n', 1)
+    return retval
 
-    return json.loads(json)
 
 def dump_window_form_data():
-        s.sendall('js uzbl.formfiller.dump();\n')
-    pass
+    return send_javascript('uzbl.formfiller.dump();')
 
 
 def update_window_form_data():
@@ -53,8 +53,7 @@ def update_window_form_data():
 def main(argv=None):
 
     # get data from uzbl window
-
-    dump_data = yaml.load(json_dump_data)
+    dump_data = dump_window_form_data()
 
     # parse uri for information needed to load/update/save site data
     uri = os.getenv('UZBL_URI', 'noproto://undefined')
