@@ -76,7 +76,9 @@ def notify_user(message):
 
 
 def load_action(filepath, window_urlpath):
-    return update_window_form_data(load_data(filepath))
+    data = load_data(filepath)
+    window_data = data.get(window_urlpath, None)
+    return update_window_form_data(window_data)
 
 
 def store_action(filepath, window_urlpath, keys):

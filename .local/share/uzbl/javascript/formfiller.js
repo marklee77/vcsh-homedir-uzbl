@@ -35,7 +35,18 @@ uzbl.formfiller = {
     },
     
     load: function(data) {
-        alert(data);        
+        var allFrames = new Array(window);
+
+        for (var i = 0; i < window.frames.length; i++) {
+            allFrames.push(window.frames[i]);
+        }
+
+        for (var i = 0; i < allFrames.length; i++) {
+            try {
+                var forms = allFrames[i].document.getElementsByTagName('form');
+            }
+            catch (err) { }
+        }
     },
 
     insert: function(fname, ftype, fvalue, fchecked) {
