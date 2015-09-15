@@ -32,7 +32,8 @@ def main(argv=None):
 
     message, json_data = response.split('\n', 1)
     data = yaml.load(json_data)
-    yaml_data = yaml.dump(data)
+    yaml_data = yaml.dump(data, width=79, indent=2, default_flow_style=False,
+                          explicit_start=True)
 
     hostname = urlparse(os.getenv('UZBL_URI', 'http://undefined')).hostname
 

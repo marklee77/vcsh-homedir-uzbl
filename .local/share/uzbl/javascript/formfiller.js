@@ -1,20 +1,5 @@
 uzbl.formfiller = {
 
-    // this is pointlessly duplicated in uzbl.follow
-    textInputTypes: [
-      'text', 'password', 'search', 'email', 'url', 'number', 'range', 'color',
-      'date', 'month', 'week', 'time', 'datetime', 'datetime-local'
-    ]
-
-    ,
-
-    // this is pointlessly duplicated in uzbl.follow
-    inputTypeIsText: function(type) {
-        return uzbl.formfiller.textInputTypes.indexOf(type) >= 0;
-    }
-
-    ,
-
     dump: function() {
         var data = [];
         var allFrames = new Array(window);
@@ -28,28 +13,26 @@ uzbl.formfiller = {
                 var forms = allFrames[i].document.getElementsByTagName('form');
                 for(var j = 0; j < forms.length; j++) {
                     var form = forms[j];
-                    formdata = {'name': form.name, 'fields': []}
+                    forminfo = {'name': form.name, 'fields': []}
                     for(var k = 0; k < form.elements.length; k++) {
                         var element = form.elements[k];
                         if (element.name == '') continue;
-                            elementdata = { 'name': element.name, 
+                            elementinfo = { 'name': element.name, 
                                             'type': element.type, 
                                             'value': element.value};
                         if (['checkbox', 'radio'].indexOf(element.type) > -1) {
-                            elementdata['checked'] = element.checked;
+                            elementinfo['checked'] = element.checked;
                         }
-                        formdata['fields'].push(elementdata)
+                        forminfo['fields'].push(elementinfo)
                     }
-                    data.push(formdata)
+                    data.push(forminfo)
                 }
 
             }
             catch (err) { }
         }
         return JSON.stringify(data);
-    }
-
-    ,
+    },
 
     insert: function(fname, ftype, fvalue, fchecked) {
         fname = unescape(fname);
@@ -78,5 +61,4 @@ uzbl.formfiller = {
             catch (err) { }
         }
     }
-
 }
