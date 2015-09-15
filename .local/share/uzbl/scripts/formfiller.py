@@ -3,8 +3,10 @@
 #   - socket length
 #   - configuration file
 #   - notify user
-#   - default recipient?
+#   - command line key, at least one required to save
 #   - keep recipients on reencode
+#   - better variable names
+#   - proper checking and user feedback
 import json
 import os
 import socket
@@ -126,6 +128,9 @@ def main(argv=None):
     parser = ArgumentParser(description='form filler for uzbl')
     parser.add_argument('action', help='action to perform',
                         choices=['load', 'store'])
+    parser.add_argument('-r', '--recipient', action='append',
+                        help='gpg recipient, repeat for multiple, '
+                             'required to store')
 
     args = parser.parse_args()
 
