@@ -116,7 +116,7 @@ def store_action(filepath, window_urlpath, keys):
 
 def main(argv=None):
 
-    uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'forms')
+    uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'formdata')
 
     # ensure that forms directory exists and has secure permissions
     try:
