@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # FIXME:
 #   - socket length
-#   - configuration file
-#   - notify user
-#   - command line key, at least one required to save
-#   - keep recipients on reencode
-#   - better variable names
 #   - proper checking and user feedback
+#   - support multiple data for same form
+#   - support hinting that data available
 import json
 import os
 import socket
@@ -49,23 +46,23 @@ def store_data(filepath, data, keys):
 
 
 def send_javascript(script):
-    retval = None
+    response = ''
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(os.environ.get('UZBL_SOCKET', None))
         s.sendall('js {};\n'.format(script))
         response = s.recv(16384)
         s.close()
-        _, js_retval = response.split('\n', 1)
-        retval = yaml.load(js_retval)
     except:
         pass
 
-    return retval
+    return response
 
 
 def dump_window_form_data():
-    return send_javascript('uzbl.formfiller.dump()')
+    response = send_javascript('JSON.stringify(uzbl.formfiller.dump())')
+    _, json_retval = response.split('\n', 1)
+    return yaml.load(json_retval)
 
 
 def update_window_form_data(data):

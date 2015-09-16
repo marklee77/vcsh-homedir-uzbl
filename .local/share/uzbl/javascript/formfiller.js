@@ -39,7 +39,7 @@ uzbl.formfiller = {
             }
             allFormsData.push(formData)
         }
-        return JSON.stringify(allFormsData);
+        return allFormsData;
     },
     
     load: function(allFormsData) {
