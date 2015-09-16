@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # FIXME:
-#   - proper checking and user feedback
+#   - better user feedback
 #   - support multiple data for same form
 #   - support hinting that data available
 #   - support password generation
