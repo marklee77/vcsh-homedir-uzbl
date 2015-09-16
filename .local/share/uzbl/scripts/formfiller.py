@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # FIXME:
-#   - socket length
 #   - proper checking and user feedback
 #   - support multiple data for same form
 #   - support hinting that data available
+#   - support password generation
 import json
 import os
 import socket
@@ -16,6 +16,10 @@ from urlparse import urlparse
 from xdg.BaseDirectory import xdg_data_home
 
 gpg = GPG()
+
+# if someone with more experience working with python sockets knows a better
+# way to do this, email me some code or put in a github pull request.
+RECV_BUFSIZE = 1024*1024
 
 
 def load_data(filepath):
@@ -51,7 +55,7 @@ def send_javascript(script):
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(os.environ.get('UZBL_SOCKET', None))
         s.sendall('js {};\n'.format(script))
-        response = s.recv(16384)
+        response = s.recv(RECV_BUFSIZE)
         s.close()
     except:
         pass
