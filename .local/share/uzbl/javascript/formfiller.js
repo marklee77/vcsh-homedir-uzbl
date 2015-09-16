@@ -41,35 +41,42 @@ uzbl.formfiller = {
         }
         return allFormsData;
     },
-    
+
+    // load matches forms by array index and doesn't currently use the form name
+    // for matching. Revisit if it turns out to be an issue.
     load: function(allFormsData) {
         var forms = this.getForms();
 
         for (var i = 0; i < forms.length && i < allFormsData.length; i++) {
-            for (var j = 0; j < allFormsData[i].elements.length; j++) {
-                var elementData = allFormsData[i].elements[j];
-                if (['checkbox', 'radio'].indexOf(elementData.type) > -1) {
-                    var elements = forms[i].elements[elementData.name];
-                    // if elements is a singleton rather than a collection,
-                    // then wrap it in an array.
-                    if (!elements.length) {
-                        elements = [elements];
-                    }
-                    for (k = 0; k < elements.length; k++) {
-                        if (elements[k].value == elementData.value) {
-                            elements[k].checked = elementData.checked;
+            var formData = allFormsData[i];
+            for (var j = 0; j < formData.elements.length; j++) {
+                var elementData = formData.elements[j];
+                try {
+                    if (['checkbox', 'radio'].indexOf(elementData.type) > -1) {
+                        var elements = forms[i].elements[elementData.name];
+                        // if elements is a singleton rather than a collection,
+                        // then wrap it in an array.
+                        if (!elements.length) {
+                            elements = [elements];
                         }
+                        for (k = 0; k < elements.length; k++) {
+                            if (elements[k].value == elementData.value) {
+                                elements[k].checked = elementData.checked;
+                            }
+                        }
+                    } else {
+                        // this bit of ugliness is because elements[name] might 
+                        // be a collection if more than one element has the same 
+                        // name. In this case we just set the value of the 
+                        // first.
+                        var element = forms[i].elements[elementData.name];
+                        if (element.length) {
+                            element = element[0];
+                        } 
+                        element.value = elementData.value;
                     }
-                } else {
-                    // this bit of ugliness is because elements[name] might be a
-                    // collection if more than one element has the same name. In 
-                    // this case we just set the value of the first.
-                    var element = forms[i].elements[elementData.name];
-                    if (element.length) {
-                        element = element[0];
-                    } 
-                    element.value = elementData.value;
                 }
+                catch (err) { }
             }
         }
     },
