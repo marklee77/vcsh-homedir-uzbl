@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # FIXME:
-#   - better user feedback
 #   - support multiple data for same form
-#   - support hinting that data available
+#   - support linking paths as well as sites
+#   - support hinting that data is available
 #   - support password generation
 import gtk
 import json
@@ -77,6 +77,14 @@ def update_window_form_data(data):
 
 def notify_user(message):
     #send_javascript('alert("{}")'.format(message))
+    dialog = gtk.MessageDialog(
+        None,
+        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+        gtk.MESSAGE_INFO,
+        gtk.BUTTONS_OK,
+        message)
+
+    dialog.run()
 
 
 def load_action(filepath, window_urlpath):
@@ -101,7 +109,7 @@ def store_action(filepath, window_urlpath, keys):
     retval = store_data(filepath, data, keys)
 
     if retval:
-        notify_user('forms saved successfully!')
+        notify_user('Form data saved!')
 
     return retval
 
