@@ -4,6 +4,7 @@
 #   - support multiple data for same form
 #   - support hinting that data available
 #   - support password generation
+import gtk
 import json
 import os
 import socket
@@ -75,7 +76,7 @@ def update_window_form_data(data):
 
 
 def notify_user(message):
-    send_javascript('alert("{}")'.format(message))
+    #send_javascript('alert("{}")'.format(message))
 
 
 def load_action(filepath, window_urlpath):
