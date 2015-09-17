@@ -7,6 +7,10 @@
 #   - actually forms from other frames should be associated with the src url...
 #     get from javascript instead of UZBL_URI?
 #   - capture available values from select box
+#   - possible db format: index.yml with encrypted entries
+#       - index contains entries with url regex list, form name, field names,
+#         optionally encryption targets, and form uuid, uuid.yml.asc contains
+#         encrypted info for a single form
 import gtk
 import json
 import os
