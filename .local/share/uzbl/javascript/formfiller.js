@@ -3,7 +3,6 @@ uzbl.formfiller = {
     getFrames: function(frame) {
         var frames = new Array(frame);
 
-        
         for (var i = 0; i < frame.frames.length; i++) {
             frames.concat(getFrames(frame.frames[i]))
         }
