@@ -5,7 +5,7 @@ uzbl.formfiller = {
 
         
         for (var i = 0; i < frame.frames.length; i++) {
-            frames.concat(getFrames(frame.frames[i])
+            frames.concat(getFrames(frame.frames[i]))
         }
 
         return frames;
@@ -22,7 +22,7 @@ uzbl.formfiller = {
                     var formData = {'name': forms[j].name, 
                                     'href': frames[i].location.href, 
                                     'elements': []}
-                    for(var k = 0; j < forms[j].elements.length; k++) {
+                    for(var k = 0; k < forms[j].elements.length; k++) {
                         var element = forms[j].elements[k];
                         if (element.name == '') continue;
                         elementData = {'name': element.name, 
