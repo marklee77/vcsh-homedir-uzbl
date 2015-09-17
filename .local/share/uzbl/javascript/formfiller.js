@@ -1,30 +1,29 @@
 uzbl.formfiller = {
 
-    getForms: function(frame) {
-        var forms = new Array();
+    getFrames: function(frame) {
+        var frames = new Array(frame);
 
-        try {
-            frameForms = frame.document.getElementsByTagName('form');
-            for (var j = 0; j < frameForms.length; j++) {
-                forms.push(frameForms[j]);
-            }
-        }
-        catch (err) { }
-
+        
         for (var i = 0; i < frame.frames.length; i++) {
-            forms.concat(getForms(frame.frames[i]);
+            frames.concat(getFrames(frame.frames[i])
         }
 
-        return forms;
+        return frames;
     },
 
     dump: function() {
         var allFormsData = [];
-        var forms = this.getForms();
+        var frames = this.getFrames(window);
 
-        for (var i = 0; i < forms.length; i++) {
-            var formData = {'name': forms[i].name, 'elements': []}
-            for(var j = 0; j < forms[i].elements.length; j++) {
+        for (var i = 0; i < frames.length; i++) {
+            try {
+                forms = frames[i].document.getElementsByTagName('form');
+                for (var j = 0; j < forms.length; j++) {
+                    var formData = {'name': forms[j].name, 'elements': []}
+                    for(var k = 0; j < forms[j].elements.length; k++) {
+                }
+            }
+            catch (err) { }
                 var element = forms[i].elements[j];
                 if (element.name == '') continue;
                 elementData = {'name': element.name, 'type': element.type, 
