@@ -4,6 +4,8 @@
 #   - support linking paths as well as sites
 #   - support hinting that data is available
 #   - support password generation
+#   - actually forms from other frames should be associated with the src url...
+#     get from javascript instead of UZBL_URI?
 import gtk
 import json
 import os
