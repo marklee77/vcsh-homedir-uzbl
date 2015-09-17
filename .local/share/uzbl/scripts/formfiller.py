@@ -6,6 +6,7 @@
 #   - support password generation
 #   - actually forms from other frames should be associated with the src url...
 #     get from javascript instead of UZBL_URI?
+#   - capture available values from select box
 import gtk
 import json
 import os
