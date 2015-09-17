@@ -1,21 +1,18 @@
 uzbl.formfiller = {
 
-    getForms: function() {
+    getForms: function(frame) {
         var forms = new Array();
 
-        var frames = new Array(window);
-        for (var i = 0; i < window.frames.length; i++) {
-            frames.push(window.frames[i]);
-        }
-
-        for (var i = 0; i < frames.length; i++) {
-            try {
-                frameForms = frames[i].document.getElementsByTagName('form');
-                for (var j = 0; j < frameForms.length; j++) {
-                    forms.push(frameForms[j]);
-                }
+        try {
+            frameForms = frame.document.getElementsByTagName('form');
+            for (var j = 0; j < frameForms.length; j++) {
+                forms.push(frameForms[j]);
             }
-            catch (err) { }
+        }
+        catch (err) { }
+
+        for (var i = 0; i < frame.frames.length; i++) {
+            forms.concat(getForms(frame.frames[i]);
         }
 
         return forms;
