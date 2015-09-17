@@ -19,21 +19,24 @@ uzbl.formfiller = {
             try {
                 forms = frames[i].document.getElementsByTagName('form');
                 for (var j = 0; j < forms.length; j++) {
-                    var formData = {'name': forms[j].name, 'elements': []}
+                    var formData = {'name': forms[j].name, 
+                                    'href': frames[i].location.href, 
+                                    'elements': []}
                     for(var k = 0; j < forms[j].elements.length; k++) {
+                        var element = forms[j].elements[k];
+                        if (element.name == '') continue;
+                        elementData = {'name': element.name, 
+                                       'type': element.type, 
+                                       'value': element.value};
+                        if (['checkbox', 'radio'].indexOf(element.type) > -1) {
+                            elementData['checked'] = element.checked;
+                        }
+                        formData['elements'].push(elementData)
+                    }
+                    allFormsData.push(formData)
                 }
             }
             catch (err) { }
-                var element = forms[i].elements[j];
-                if (element.name == '') continue;
-                elementData = {'name': element.name, 'type': element.type, 
-                               'value': element.value};
-                if (['checkbox', 'radio'].indexOf(element.type) > -1) {
-                    elementData['checked'] = element.checked;
-                }
-                formData['elements'].push(elementData)
-            }
-            allFormsData.push(formData)
         }
         return allFormsData;
     },
