@@ -4,7 +4,7 @@ uzbl.formfiller = {
         var frames = new Array(frame);
 
         for (var i = 0; i < frame.frames.length; i++) {
-            frames.concat(getFrames(frame.frames[i]))
+            frames = frames.concat(this.getFrames(frame.frames[i]))
         }
 
         return frames;
