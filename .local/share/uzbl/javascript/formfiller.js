@@ -1,51 +1,53 @@
 uzbl.formfiller = {
 
-    getFrames: function(frame) {
-        var frames = new Array(frame);
+    getFrameList: function(frame) {
+        var frameList = new Array(frame);
 
         for (var i = 0; i < frame.frames.length; i++) {
-            frames = frames.concat(this.getFrames(frame.frames[i]))
+            frameList = frameList.concat(this.getFrames(frame.frames[i]))
         }
 
-        return frames;
+        return frameList;
     },
 
     dump: function() {
-        var allFormsData = [];
-        var frames = this.getFrames(window);
+        var formDataList = [];
+        var frameList = this.getFrames(window);
 
-        for (var i = 0; i < frames.length; i++) {
+        for (var i = 0; i < frameList.length; i++) {
+            var frame = frameList[i];
             try {
-                forms = frames[i].document.getElementsByTagName('form');
-                for (var j = 0; j < forms.length; j++) {
-                    var formData = {'href': frames[i].location.href,
-                                    'hostname': frames[i].location.hostname,
-                                    'pathname': frames[i].location.pathname,
-                                    'name': forms[j].name, 
+                var formList = frame.document.getElementsByTagName('form');
+                for (var j = 0; j < formList.length; j++) {
+                    var form = formList[j];
+                    var formData = {'href': frame.location.href,
+                                    'hostname': frame.location.hostname,
+                                    'pathname': frame.location.pathname,
+                                    'name': form.name,
                                     'elements': []}
-                    for(var k = 0; k < forms[j].elements.length; k++) {
-                        var element = forms[j].elements[k];
+                    for(var k = 0; k < form.elements.length; k++) {
+                        var element = form.elements[k];
                         if (element.name == '') continue;
-                        elementData = {'name': element.name, 
-                                       'type': element.type, 
+                        elementData = {'name': element.name,
+                                       'type': element.type,
                                        'value': element.value};
                         if (['checkbox', 'radio'].indexOf(element.type) > -1) {
                             elementData['checked'] = element.checked;
                         }
                         formData['elements'].push(elementData)
                     }
-                    allFormsData.push(formData)
+                    formDataList.push(formData)
                 }
             }
             catch (err) { }
         }
-        return allFormsData;
+        return formDataList;
     },
 
     // load matches forms by array index and doesn't currently use the form name
     // for matching. Revisit if it turns out to be an issue.
-    load: function(allFormsData) {
-        var frames = this.getFrames(window);
+    load: function(formDataDict) {
+        var frameList = this.getFrames(window);
 
         for (var i = 0; i < frames.length; i++) {
             var hostname = frames[i].location.hostname;
