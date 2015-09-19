@@ -4,22 +4,22 @@ uzbl.formfiller = {
         var frameList = new Array(frame);
 
         for (var i = 0; i < frame.frames.length; i++) {
-            frameList = frameList.concat(this.getFrames(frame.frames[i]))
+            frameList = frameList.concat(this.getFrameList(frame.frames[i]))
         }
 
         return frameList;
     },
 
     dump: function() {
-        var frameList = this.getFrames(window);
+        var frameList = this.getFrameList(window);
         var formDataList = [];
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
             try {
-                var formList = frame.document.getElementsByTagName('form');
-                for (var j = 0; j < formList.length; j++) {
-                    var form = formList[j];
+                var frameFormList = frame.document.getElementsByTagName('form');
+                for (var j = 0; j < frameFormList.length; j++) {
+                    var form = frameFormList[j];
                     var formData = {'href': frame.location.href,
                                     'hostname': frame.location.hostname,
                                     'pathname': frame.location.pathname,
@@ -47,13 +47,13 @@ uzbl.formfiller = {
     // load matches forms by array index and doesn't currently use the form name
     // for matching. Revisit if it turns out to be an issue.
     load: function(formDataDict) {
-        var frameList = this.getFrames(window);
+        var frameList = this.getFrameList(window);
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
             var hostname = frame.location.hostname;
             var pathname = frame.location.pathname;
-            var frameFormDataList = formDataDict[hostname + "/" + pathname]
+            var frameFormDataList = formDataDict[hostname + pathname]
             try {
                 frameFormList = frame.document.getElementsByTagName('form');
                 for (var j = 0; 
@@ -69,21 +69,21 @@ uzbl.formfiller = {
                             if (['checkbox', 'radio'].indexOf(elementData.type) 
                                 > -1) 
                             {
-                                // if elements is a singleton rather than a collection,
-                                // then wrap it in an array.
-                                if (!elements.length) {
-                                    elements = [elements];
-                                }
-                                for (l = 0; l < elements.length; l++) {
-                                    if (elements[l].value == elementData.value) {
-                                        elements[l].checked = elementData.checked;
+                                // if element is a singleton rather than a 
+                                // collection, then wrap it in an array.
+                                if (!element.length) element = [element];
+                                
+                                for (l = 0; l < element.length; l++) {
+                                    if (element[l].value == elementData.value) {
+                                        element[l].checked = 
+                                            elementData.checked;
                                     }
                                 }
                             } else {
-                                // this bit of ugliness is because elements[name] might 
-                                // be a collection if more than one element has the same 
-                                // name. In this case we just set the value of the 
-                                // first.
+                                // this bit of ugliness is because 
+                                // element[name] might be a collection if more 
+                                // than one element has the same name. In this 
+                                // case we just set the value of the first.
                                 var element = form.elements[elementData.name];
                                 if (element.length) {
                                     element = element[0];
