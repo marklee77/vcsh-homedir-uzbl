@@ -11,6 +11,7 @@
 #       - index contains entries with url regex list, form name, field names,
 #         optionally encryption targets, and form uuid, uuid.yml.asc contains
 #         encrypted info for a single form
+#   - check for https when loading
 import gtk
 import json
 import os
