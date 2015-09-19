@@ -19,7 +19,7 @@ uzbl.formfiller = {
                 forms = frames[i].document.getElementsByTagName('form');
                 for (var j = 0; j < forms.length; j++) {
                     var formData = {'name': forms[j].name, 
-                                    'href': frames[i].location.href, 
+                                    'href': frames[i].location.href,
                                     'elements': []}
                     for(var k = 0; k < forms[j].elements.length; k++) {
                         var element = forms[j].elements[k];
