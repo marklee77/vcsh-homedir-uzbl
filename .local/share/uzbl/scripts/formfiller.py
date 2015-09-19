@@ -12,6 +12,7 @@
 #         optionally encryption targets, and form uuid, uuid.yml.asc contains
 #         encrypted info for a single form
 #   - check for https when loading
+#   - autoload
 import gtk
 import json
 import os
@@ -25,13 +26,15 @@ from urlparse import urlparse
 from xdg.BaseDirectory import xdg_data_home
 
 gpg = GPG()
+uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'formdata')
 
 # if someone with more experience working with python sockets knows a better
 # way to do this, email me some code or put in a github pull request.
 RECV_BUFSIZE = 1024*1024
 
 
-def load_data(filepath):
+def load_data(name):
+    filepath = os.path_join(uzbl_forms_dir, name + '.yml.asc')
     data = {}
     try:
         data = yaml.load(str(gpg.decrypt_file(open(filepath, 'r'))))
@@ -95,16 +98,17 @@ def notify_user(message):
     dialog.run()
 
 
-def load_action(filepath, window_urlpath):
-    data = load_data(filepath)
-    window_data = data.get(window_urlpath, None)
-    return update_window_form_data(window_data)
+def load_action():
+    #data = load_data(filepath)
+    #window_data = data.get(window_urlpath, None)
+    #return update_window_form_data(window_data)
+    pass
 
 
-def store_action(filepath, window_urlpath, keys):
+def store_action(keys):
 
     # load data from file
-    data = load_data(filepath)
+    index_data = load_data(os.path.join('index')
 
     # get data from uzbl window
     window_form_data = dump_window_form_data()
@@ -124,24 +128,11 @@ def store_action(filepath, window_urlpath, keys):
 
 def main(argv=None):
 
-    uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'formdata')
-
     # ensure that forms directory exists and has secure permissions
     try:
         os.makedirs(uzbl_forms_dir, 0700)
     except OSError:
         os.chmod(uzbl_forms_dir, 0700)
-
-    # parse uri for information needed to load/update/save site data
-    window_uri = os.getenv('UZBL_URI', 'noproto://undefined')
-    urlparse_result = urlparse(window_uri)
-    window_hostname = urlparse_result.hostname
-    window_urlpath = urlparse_result.path
-    if window_urlpath is None or window_urlpath == '':
-        window_urlpath = '/'
-
-    # generate file path for current uzbl window
-    filepath = os.path.join(uzbl_forms_dir, window_hostname + '.yml.asc')
 
     parser = ArgumentParser(description='form filler for uzbl')
     parser.add_argument('action', help='action to perform',
@@ -154,11 +145,11 @@ def main(argv=None):
 
     retval = True
     if args.action == 'load':
-        retval = load_action(filepath, window_urlpath)
+        retval = load_action()
     elif args.action == 'store':
         if args.recipient is None or len(args.recipient) < 1:
             print "at least one recipient required to store!"
-        retval = store_action(filepath, window_urlpath, args.recipient)
+        retval = store_action(args.recipient)
 
     return retval
 
