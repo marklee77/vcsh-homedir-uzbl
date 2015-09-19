@@ -60,15 +60,15 @@ uzbl.formfiller = {
                         var elementData = formData.elements[k];
                         try {
                             if (['checkbox', 'radio'].indexOf(elementData.type) > -1) {
-                                var elements = forms[i].elements[elementData.name];
+                                var elements = form.elements[elementData.name];
                                 // if elements is a singleton rather than a collection,
                                 // then wrap it in an array.
                                 if (!elements.length) {
                                     elements = [elements];
                                 }
-                                for (k = 0; k < elements.length; k++) {
-                                    if (elements[k].value == elementData.value) {
-                                        elements[k].checked = elementData.checked;
+                                for (l = 0; l < elements.length; l++) {
+                                    if (elements[l].value == elementData.value) {
+                                        elements[l].checked = elementData.checked;
                                     }
                                 }
                             } else {
@@ -76,10 +76,10 @@ uzbl.formfiller = {
                                 // be a collection if more than one element has the same 
                                 // name. In this case we just set the value of the 
                                 // first.
-                                var element = forms[i].elements[elementData.name];
+                                var element = form.elements[elementData.name];
                                 if (element.length) {
                                     element = element[0];
-                                } 
+                                }
                                 element.value = elementData.value;
                             }
                         }
@@ -90,37 +90,5 @@ uzbl.formfiller = {
             catch (err) { }
         }
  
-        for (var i = 0; i < forms.length && i < allFormsData.length; i++) {
-            var formData = allFormsData[i];
-            for (var j = 0; j < formData.elements.length; j++) {
-                var elementData = formData.elements[j];
-                try {
-                    if (['checkbox', 'radio'].indexOf(elementData.type) > -1) {
-                        var elements = forms[i].elements[elementData.name];
-                        // if elements is a singleton rather than a collection,
-                        // then wrap it in an array.
-                        if (!elements.length) {
-                            elements = [elements];
-                        }
-                        for (k = 0; k < elements.length; k++) {
-                            if (elements[k].value == elementData.value) {
-                                elements[k].checked = elementData.checked;
-                            }
-                        }
-                    } else {
-                        // this bit of ugliness is because elements[name] might 
-                        // be a collection if more than one element has the same 
-                        // name. In this case we just set the value of the 
-                        // first.
-                        var element = forms[i].elements[elementData.name];
-                        if (element.length) {
-                            element = element[0];
-                        } 
-                        element.value = elementData.value;
-                    }
-                }
-                catch (err) { }
-            }
-        }
     },
 }
