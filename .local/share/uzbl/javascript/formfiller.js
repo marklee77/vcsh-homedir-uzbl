@@ -18,8 +18,10 @@ uzbl.formfiller = {
             try {
                 forms = frames[i].document.getElementsByTagName('form');
                 for (var j = 0; j < forms.length; j++) {
-                    var formData = {'name': forms[j].name, 
-                                    'href': frames[i].location.href,
+                    var formData = {'href': frames[i].location.href,
+                                    'hostname': frames[i].location.hostname,
+                                    'pathname': frames[i].location.pathname,
+                                    'name': forms[j].name, 
                                     'elements': []}
                     for(var k = 0; k < forms[j].elements.length; k++) {
                         var element = forms[j].elements[k];
@@ -43,8 +45,51 @@ uzbl.formfiller = {
     // load matches forms by array index and doesn't currently use the form name
     // for matching. Revisit if it turns out to be an issue.
     load: function(allFormsData) {
-        var forms = this.getForms();
+        var frames = this.getFrames(window);
 
+        for (var i = 0; i < frames.length; i++) {
+            var hostname = frames[i].location.hostname;
+            var pathname = frames[i].location.pathname;
+            var frameFormsData = allFormsData[hostname][pathname]
+            try {
+                forms = frames[i].document.getElementsByTagName('form');
+                for (var j = 0; j < forms.length && j < frameFormsData.length ; j++) {
+                    var form = forms[j];
+                    var formData = frameFormsData[j];
+                    for (var k = 0; j < formData.elements.length; k++) {
+                        var elementData = formData.elements[k];
+                        try {
+                            if (['checkbox', 'radio'].indexOf(elementData.type) > -1) {
+                                var elements = forms[i].elements[elementData.name];
+                                // if elements is a singleton rather than a collection,
+                                // then wrap it in an array.
+                                if (!elements.length) {
+                                    elements = [elements];
+                                }
+                                for (k = 0; k < elements.length; k++) {
+                                    if (elements[k].value == elementData.value) {
+                                        elements[k].checked = elementData.checked;
+                                    }
+                                }
+                            } else {
+                                // this bit of ugliness is because elements[name] might 
+                                // be a collection if more than one element has the same 
+                                // name. In this case we just set the value of the 
+                                // first.
+                                var element = forms[i].elements[elementData.name];
+                                if (element.length) {
+                                    element = element[0];
+                                } 
+                                element.value = elementData.value;
+                            }
+                        }
+                        catch (err) { }
+                    }
+                }
+            }
+            catch (err) { }
+        }
+ 
         for (var i = 0; i < forms.length && i < allFormsData.length; i++) {
             var formData = allFormsData[i];
             for (var j = 0; j < formData.elements.length; j++) {
