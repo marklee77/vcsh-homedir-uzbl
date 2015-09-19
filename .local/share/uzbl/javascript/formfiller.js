@@ -11,8 +11,8 @@ uzbl.formfiller = {
     },
 
     dump: function() {
-        var formDataList = [];
         var frameList = this.getFrames(window);
+        var formDataList = [];
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
@@ -49,20 +49,26 @@ uzbl.formfiller = {
     load: function(formDataDict) {
         var frameList = this.getFrames(window);
 
-        for (var i = 0; i < frames.length; i++) {
-            var hostname = frames[i].location.hostname;
-            var pathname = frames[i].location.pathname;
-            var frameFormsData = allFormsData[hostname][pathname]
+        for (var i = 0; i < frameList.length; i++) {
+            var frame = frameList[i];
+            var hostname = frame.location.hostname;
+            var pathname = frame.location.pathname;
+            var frameFormDataList = formDataDict[hostname + "/" + pathname]
             try {
-                forms = frames[i].document.getElementsByTagName('form');
-                for (var j = 0; j < forms.length && j < frameFormsData.length ; j++) {
-                    var form = forms[j];
-                    var formData = frameFormsData[j];
+                frameFormList = frame.document.getElementsByTagName('form');
+                for (var j = 0; 
+                     j < frameFormList.length && j < frameFormDataList.length; 
+                     j++) 
+                {
+                    var form = frameFormList[j];
+                    var formData = frameFormDataList[j];
                     for (var k = 0; j < formData.elements.length; k++) {
+                        var element = form.elements[elementData.name];
                         var elementData = formData.elements[k];
                         try {
-                            if (['checkbox', 'radio'].indexOf(elementData.type) > -1) {
-                                var elements = form.elements[elementData.name];
+                            if (['checkbox', 'radio'].indexOf(elementData.type) 
+                                > -1) 
+                            {
                                 // if elements is a singleton rather than a collection,
                                 // then wrap it in an array.
                                 if (!elements.length) {
