@@ -34,7 +34,7 @@ RECV_BUFSIZE = 1024*1024
 
 
 def load_data(name):
-    filepath = os.path_join(uzbl_forms_dir, name + '.yml.asc')
+    filepath = os.path.join(uzbl_forms_dir, name + '.yml.asc')
     data = {}
 
     try:
@@ -111,14 +111,14 @@ def load_action():
 def store_action(keys):
 
     # load data from file
-    index_data = load_data(os.path.join('index'))
+    data = load_data(os.path.join('index'))
 
     # get data from uzbl window
     form_data_list = dump_window_form_data_list()
 
     # update site data
-    if window_form_data_list is not None:
-        data[window_urlpath] = window_form_data
+    if form_data_list is not None:
+        data[window_urlpath] = form_data_list
 
     # save site form data and return result
     retval = store_data(data, keys)
