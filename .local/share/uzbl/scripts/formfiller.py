@@ -36,6 +36,7 @@ RECV_BUFSIZE = 1024*1024
 def load_data(name):
     filepath = os.path_join(uzbl_forms_dir, name + '.yml.asc')
     data = {}
+
     try:
         data = yaml.load(str(gpg.decrypt_file(open(filepath, 'r'))))
     except:
@@ -43,16 +44,18 @@ def load_data(name):
     return data
 
 
-def store_data(filepath, data, keys):
+def store_data(data, name, keys):
+    filepath = os.path_join(uzbl_forms_dir, name + '.yml.asc')
 
     if not data:
         return True
 
     success = False
     try:
-        ydata = yaml.dump(data, default_flow_style=False, explicit_start=True)
         f = open(filepath, 'w')
-        f.write(str(gpg.encrypt(ydata, keys)))
+        f.write(str(gpg.encrypt(yaml.dump(data,
+                                          default_flow_style=False,
+                                          explicit_start=True), keys)))
         f.close()
         success = True
     except:
@@ -75,7 +78,7 @@ def send_javascript(script):
     return response
 
 
-def dump_window_form_data():
+def dump_window_form_data_list():
     response = send_javascript('JSON.stringify(uzbl.formfiller.dump())')
     _, json_retval = response.split('\n', 1)
     return yaml.load(json_retval)
@@ -108,17 +111,17 @@ def load_action():
 def store_action(keys):
 
     # load data from file
-    index_data = load_data(os.path.join('index')
+    index_data = load_data(os.path.join('index'))
 
     # get data from uzbl window
-    window_form_data = dump_window_form_data()
+    form_data_list = dump_window_form_data_list()
 
     # update site data
-    if window_form_data is not None:
+    if window_form_data_list is not None:
         data[window_urlpath] = window_form_data
 
     # save site form data and return result
-    retval = store_data(filepath, data, keys)
+    retval = store_data(data, keys)
 
     if retval:
         notify_user('Form data saved!')
