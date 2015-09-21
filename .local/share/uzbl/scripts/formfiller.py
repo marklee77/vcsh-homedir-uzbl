@@ -82,8 +82,8 @@ def send_javascript(script):
     return response
 
 
-def dump_window_form_data_list():
-    response = send_javascript('JSON.stringify(uzbl.formfiller.dump())')
+def get_form_data_list():
+    response = send_javascript('JSON.stringify(uzbl.formfiller.getFormDataList())')
     _, json_retval = response.split('\n', 1)
     retval = yaml.load(json_retval)
     if not isinstance(retval, list):
@@ -91,7 +91,7 @@ def dump_window_form_data_list():
     return retval
 
 
-def get_window_href_list():
+def get_href_list():
     response = send_javascript('JSON.stringify(uzbl.formfiller.getHrefList())')
     _, json_retval = response.split('\n', 1)
     retval = yaml.load(json_retval)
@@ -128,7 +128,7 @@ def load_action():
 
 def store_action(keys):
 
-    for dumped_form_data in dump_window_form_data_list():
+    for dumped_form_data in get_form_data_list():
         # for now, remove www. from start of hostname and index.* from end of
         # path name. Will re-examine this decision if it causes problems later.
         # alternatively, may want regex to filter www04, securewww, etc...
@@ -167,12 +167,6 @@ def store_action(keys):
 
 
 def main(argv=None):
-
-    # ensure that forms directory exists and has secure permissions
-    try:
-        os.makedirs(uzbl_forms_dir, 0700)
-    except OSError:
-        os.chmod(uzbl_forms_dir, 0700)
 
     parser = ArgumentParser(description='form filler for uzbl')
     parser.add_argument('action', help='action to perform',
