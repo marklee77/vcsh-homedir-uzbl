@@ -110,21 +110,16 @@ def load_action():
 
 def store_action(keys):
 
-    # load data from file
-    data = load_data(os.path.join('index'))
+    for form_data in dump_window_form_data_list():
+        print form_data
 
-    # get data from uzbl window
-    form_data_list = dump_window_form_data_list()
-
-    # update site data
-    if form_data_list is not None:
-        data[window_urlpath] = form_data_list
+    retval = 0
 
     # save site form data and return result
-    retval = store_data(data, keys)
+    #retval = store_data(data, keys)
 
-    if retval:
-        notify_user('Form data saved!')
+    #if retval:
+    #    notify_user('Form data saved!')
 
     return retval
 
