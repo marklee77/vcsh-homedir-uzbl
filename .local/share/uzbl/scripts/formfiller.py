@@ -146,12 +146,17 @@ def update_forms(form_data_dict):
 
 def load_action():
 
+    form_data_dict = {}
     for href in get_href_list():
+        form_data_dict[href] = {}
         page_data = load_page_data(href, 'data.yml.asc')
-        for
-    #data = load_data(filepath)
-    #window_data = data.get(window_urlpath, None)
-    return update_forms(window_data)
+        for form_name, form_data_list in page_data.items():
+            if len(form_data_list) == 0:
+                continue
+            form_data_dict[href][form_name] = form_data_list[0]
+
+    print form_data_dict
+    return update_forms(form_data_dict)
 
 
 def store_action(keys):
