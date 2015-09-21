@@ -10,6 +10,8 @@ uzbl.formfiller = {
         return frameList;
     },
 
+    get
+
     dump: function() {
         var frameList = this.getFrameList(window);
         var formDataList = [];
@@ -44,16 +46,12 @@ uzbl.formfiller = {
         return formDataList;
     },
 
-    // load matches forms by array index and doesn't currently use the form name
-    // for matching. Revisit if it turns out to be an issue.
     load: function(formDataDict) {
         var frameList = this.getFrameList(window);
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
-            var hostname = frame.location.hostname;
-            var pathname = frame.location.pathname;
-            var frameFormDataList = formDataDict[hostname + pathname]
+            var frameFormDataDict = formDataDict[frame.location.href];
             try {
                 frameFormList = frame.document.getElementsByTagName('form');
                 for (var j = 0; 
@@ -61,7 +59,7 @@ uzbl.formfiller = {
                      j++) 
                 {
                     var form = frameFormList[j];
-                    var formData = frameFormDataList[j];
+                    var formData = frameFormDataDict[form.name];
                     for (var k = 0; j < formData.elements.length; k++) {
                         var element = form.elements[elementData.name];
                         var elementData = formData.elements[k];
