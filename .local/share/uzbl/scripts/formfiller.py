@@ -49,7 +49,7 @@ def load_data(*args):
 
 
 def store_data(data, keys, *args):
-    filepath = os.path_join(uzbl_forms_dir, name + '.yml.asc')
+    filepath = os.path.join(*args)
 
     if not data:
         return True
@@ -57,7 +57,9 @@ def store_data(data, keys, *args):
     success = False
     try:
         f = open(filepath, 'w')
-        f.write(str(gpg.encrypt(yaml.dump(data,
+        if 
+        f.write(
+str(gpg.encrypt(yaml.dump(data,
                                           default_flow_style=False,
                                           explicit_start=True), keys)))
         f.close()
@@ -129,7 +131,14 @@ def store_action(keys):
             os.chmod(form_data_dir, 0700)
 
         metadata = load_data(form_data_dir, 'meta.yml')
-        
+        # metadata org: by name or by index? need autoload, list of variables
+        # how to handle multiples? how is data indexed?
+        metadata['name'] = {
+            'autoload': False,
+            'elements': [e.name for e in form_data['elements']]
+        }
+        store_data(metadata, [], form_data_dir, 'meta.yml')
+
     # save site form data and return result
     #retval = store_data(data, keys)
 
