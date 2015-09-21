@@ -68,8 +68,8 @@ uzbl.formfiller = {
                     var form = frameFormList[j];
                     var formData = frameFormDataDict[form.name];
                     for (var k = 0; j < formData.elements.length; k++) {
-                        var element = form.elements[elementData.name];
                         var elementData = formData.elements[k];
+                        var element = form.elements[elementData.name];
                         try {
                             if (['checkbox', 'radio'].indexOf(elementData.type) 
                                 > -1) 
