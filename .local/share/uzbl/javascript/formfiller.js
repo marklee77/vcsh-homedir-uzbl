@@ -34,8 +34,6 @@ uzbl.formfiller = {
                 for (var j = 0; j < frameFormList.length; j++) {
                     var form = frameFormList[j];
                     var formData = {'href': frame.location.href,
-                                    'hostname': frame.location.hostname,
-                                    'pathname': frame.location.pathname,
                                     'name': form.name,
                                     'elements': []}
                     for(var k = 0; k < form.elements.length; k++) {
@@ -57,7 +55,7 @@ uzbl.formfiller = {
         return formDataList;
     },
 
-    updateWindowForms: function(formDataDict) {
+    updateForms: function(formDataDict) {
         var frameList = this.getFrameList();
 
         for (var i = 0; i < frameList.length; i++) {

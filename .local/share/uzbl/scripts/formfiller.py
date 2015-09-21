@@ -108,6 +108,17 @@ def send_javascript(script):
     return response
 
 
+def notify_user(message):
+    dialog = gtk.MessageDialog(
+        None,
+        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+        gtk.MESSAGE_INFO,
+        gtk.BUTTONS_OK,
+        message)
+
+    dialog.run()
+
+
 def get_form_data_list():
     response = send_javascript(
         'JSON.stringify(uzbl.formfiller.getFormDataList())')
@@ -127,30 +138,20 @@ def get_href_list():
     return retval
 
 
-def update_window_form_data(data):
-    send_javascript('uzbl.formfiller.load({})'.format(json.dumps(data)))
+def update_forms(form_data_dict):
+    send_javascript(
+        'uzbl.formfiller.load({})'.format(json.dumps(form_data_dict)))
     return 0
-
-
-def notify_user(message):
-    dialog = gtk.MessageDialog(
-        None,
-        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-        gtk.MESSAGE_INFO,
-        gtk.BUTTONS_OK,
-        message)
-
-    dialog.run()
 
 
 def load_action():
 
     for href in get_href_list():
-        print href
+        page_data = load_page_data(href, 'data.yml.asc')
+        for
     #data = load_data(filepath)
     #window_data = data.get(window_urlpath, None)
-    #return update_window_form_data(window_data)
-    pass
+    return update_forms(window_data)
 
 
 def store_action(keys):
