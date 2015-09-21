@@ -136,9 +136,9 @@ def store_action(keys):
         # how to handle multiples? how is data indexed?
 
         metadata.setdefault('autoloadIdx', -1)
-        metadata['elements'] = set(metadata.get('elements', []) +
-                                   [e.get('name', None) for e in
-                                    form_data.get('elements', [])])
+        metadata[formname]['elements'] = list(set(
+            metadata.get('elements', []) +
+            [e.get('name', None) for e in form_data.get('elements', [])]))
         store_data(metadata, None, form_data_dir, 'meta.yml')
 
     # save site form data and return result
