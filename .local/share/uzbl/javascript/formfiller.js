@@ -63,9 +63,7 @@ uzbl.formfiller = {
             var frameFormDataDict = formDataDict[frame.location.href];
             try {
                 frameFormList = frame.document.getElementsByTagName('form');
-                for (var j = 0; 
-                     j < frameFormList.length && j < frameFormDataList.length; 
-                     j++) 
+                for (var j = 0; j < frameFormList.length; j++) 
                 {
                     var form = frameFormList[j];
                     var formData = frameFormDataDict[form.name];
