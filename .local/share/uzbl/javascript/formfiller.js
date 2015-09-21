@@ -10,7 +10,14 @@ uzbl.formfiller = {
         return frameList;
     },
 
-    get
+    getHrefList: function() {
+        var frameList = this.getFrameList(window);
+        var hrefList = new Array();
+        for (var i = 0; i < frameList.length; i++) {
+            hrefList.push(frameList[i].location.href);
+        }
+        return hrefList;
+    }
 
     dump: function() {
         var frameList = this.getFrameList(window);
