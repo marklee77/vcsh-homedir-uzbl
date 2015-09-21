@@ -130,11 +130,13 @@ def store_action(keys):
         except OSError:
             os.chmod(page_data_dir, 0700)
 
+        page_data = load_data(page_data_dir, 'data.yml.asc')
+        form_data_list = page_data.get(formname, [])
+        form_data_list.append(form_data)
+        store_data(page_data, keys, page_data_dir, 'data.yml.asc')
+
         page_metadata = load_data(page_data_dir, 'meta.yml')
         form_metadata = page_metadata.get(formname, {})
-        # metadata org: by name or by index? need autoload, list of variables
-        # how to handle multiples? how is data indexed?
-
         form_metadata.setdefault('autoloadIdx', -1)
         form_metadata['elements'] = list(set(
             form_metadata.get('elements', []) +
