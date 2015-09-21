@@ -23,6 +23,7 @@ import yaml
 
 from argparse import ArgumentParser
 from gnupg import GPG
+from urlparse import urlparse
 from xdg.BaseDirectory import xdg_data_home
 
 gpg = GPG()
@@ -33,7 +34,7 @@ uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'formdata')
 RECV_BUFSIZE = 1024*1024
 
 
-def load_data(*args):
+def load_data_file(*args):
     filepath = os.path.join(*args)
     data = {}
 
@@ -45,6 +46,12 @@ def load_data(*args):
     except IOError:
         pass
     return data
+
+
+def load_page_data(href, *args):
+    parse_result = urlparse(href)
+    host_name = parse_result.hostname
+    url_path = parse_result.path
 
 
 def store_data(data, keys, *args):
@@ -83,7 +90,8 @@ def send_javascript(script):
 
 
 def get_form_data_list():
-    response = send_javascript('JSON.stringify(uzbl.formfiller.getFormDataList())')
+    response = send_javascript(
+        'JSON.stringify(uzbl.formfiller.getFormDataList())')
     _, json_retval = response.split('\n', 1)
     retval = yaml.load(json_retval)
     if not isinstance(retval, list):
@@ -118,7 +126,7 @@ def notify_user(message):
 
 def load_action():
 
-    for href in get_window_href_list():
+    for href in get_href_list():
         print href
     #data = load_data(filepath)
     #window_data = data.get(window_urlpath, None)
