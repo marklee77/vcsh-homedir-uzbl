@@ -122,24 +122,25 @@ def store_action(keys):
         formname = form_data.get('hostname', '__noname__')
         hostname = re.sub('^www[^.]*\.', '', form_data['hostname']).lower()
         pathname = re.sub('index\.[^.]+$', '', form_data['pathname']).lower()
-        form_data_dir = os.path.join(uzbl_forms_dir,
+        page_data_dir = os.path.join(uzbl_forms_dir,
                                      hostname,
                                      *pathname.split('/'))
         try:
-            os.makedirs(form_data_dir, 0700)
+            os.makedirs(page_data_dir, 0700)
         except OSError:
-            os.chmod(form_data_dir, 0700)
+            os.chmod(page_data_dir, 0700)
 
-        metadata = load_data(form_data_dir, 'meta.yml').get(formname, {})
-        print metadata
+        page_metadata = load_data(page_data_dir, 'meta.yml')
+        form_metadata = page_metadata.get(formname, {})
         # metadata org: by name or by index? need autoload, list of variables
         # how to handle multiples? how is data indexed?
 
-        metadata.setdefault('autoloadIdx', -1)
-        metadata[formname]['elements'] = list(set(
-            metadata.get('elements', []) +
+        form_metadata.setdefault('autoloadIdx', -1)
+        form_metadata['elements'] = list(set(
+            form_metadata.get('elements', []) +
             [e.get('name', None) for e in form_data.get('elements', [])]))
-        store_data(metadata, None, form_data_dir, 'meta.yml')
+        page_metadata[formname] = form_metadata
+        store_data(page_metadata, None, page_data_dir, 'meta.yml')
 
     # save site form data and return result
     #retval = store_data(data, keys)
