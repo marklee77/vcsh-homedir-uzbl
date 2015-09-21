@@ -90,7 +90,8 @@ def load_page_data(href, *args):
     return load_data_file(gen_data_dir(href), *args)
 
 
-def store_page_data
+def store_page_data(data, keys, href):
+    return store_data_file(data, keys, gen_data_dir(href), *args)
 
 
 def send_javascript(script):
@@ -155,23 +156,14 @@ def load_action():
 def store_action(keys):
 
     for dumped_form_data in get_form_data_list():
-        # for now, remove www. from start of hostname and index.* from end of
-        # path name. Will re-examine this decision if it causes problems later.
-        # alternatively, may want regex to filter www04, securewww, etc...
-        formname = dumped_form_data.get('name', '__noname__')
-        hostname = re.sub('^www[^.]*\.', '',
-                          dumped_form_data['hostname']).lower()
-        pathname = re.sub('index\.[^.]+$', '',
-                          dumped_form_data['pathname']).lower()
-        page_data_dir = os.path.join(uzbl_forms_dir,
-                                     hostname,
-                                     *pathname.split('/'))
-        page_data = load_data(page_data_dir, 'data.yml.asc')
-        form_data_list = page_data.get(formname, [])
-        form_data_list = [{'href': dumped_form_data.get('href', None),
-                           'elements': dumped_form_data.get('elements', [])}]
-        page_data[formname] = form_data_list
-        store_data(page_data, keys, page_data_dir, 'data.yml.asc')
+        dumped_form_name = dumped_form_data.get('name', '__noname__')
+        dumped_form_href = dumped_form_data.get('href', 'noproto://undefined')
+        dumped_form_data_list = [
+            {'href': dumped_form_href,
+             'elements': dumped_form_data.get('elements', [])}]
+        page_data = load_page_data(dumped_form_href, 'data.yml.asc')
+        page_data[dumped_form_name] = dumped_form_data_list
+        store_page_data(page_data, keys, page_data_dir, 'data.yml.asc')
 
         page_metadata = load_data(page_data_dir, 'meta.yml')
         form_metadata = page_metadata.get(formname, {})
