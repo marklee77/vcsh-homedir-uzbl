@@ -111,7 +111,13 @@ def load_action():
 def store_action(keys):
 
     for form_data in dump_window_form_data_list():
-        print form_data
+        # for now, remove www. from start of hostname and index.* from end of
+        # path name. Will re-examine this decision if it causes problems later.
+        # alternatively, may want regex to filter www04, securewww, etc...
+        hostname = form_data['hostname']
+        if hostname.startswith('www.'):
+            hostname = hostname[4:]
+        pathname = form_data['pathname']
 
     retval = 0
 
