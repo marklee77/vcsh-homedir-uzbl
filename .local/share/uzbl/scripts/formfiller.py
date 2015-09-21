@@ -88,6 +88,12 @@ def dump_window_form_data_list():
     return yaml.load(json_retval)
 
 
+def get_window_href_list():
+    response = send_javascript('JSON.stringify(uzbl.formfiller.getHrefList())')
+    _, json_retval = response.split('\n', 1)
+    return yaml.load(json_retval)
+
+
 def update_window_form_data(data):
     send_javascript('uzbl.formfiller.load({})'.format(json.dumps(data)))
     return 0
@@ -106,6 +112,8 @@ def notify_user(message):
 
 
 def load_action():
+
+        
     #data = load_data(filepath)
     #window_data = data.get(window_urlpath, None)
     #return update_window_form_data(window_data)
