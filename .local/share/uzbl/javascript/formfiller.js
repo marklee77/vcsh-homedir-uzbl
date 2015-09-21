@@ -15,7 +15,7 @@ uzbl.formfiller = {
     },
 
     getHrefList: function() {
-        var frameList = this.getFrameList(window);
+        var frameList = this.getFrameList();
         var hrefList = new Array();
         for (var i = 0; i < frameList.length; i++) {
             hrefList.push(frameList[i].location.href);
@@ -23,8 +23,8 @@ uzbl.formfiller = {
         return hrefList;
     },
 
-    dump: function() {
-        var frameList = this.getFrameList(window);
+    getFormDataList: function() {
+        var frameList = this.getFrameList();
         var formDataList = [];
 
         for (var i = 0; i < frameList.length; i++) {
@@ -57,8 +57,8 @@ uzbl.formfiller = {
         return formDataList;
     },
 
-    load: function(formDataDict) {
-        var frameList = this.getFrameList(window);
+    updateWindowForms: function(formDataDict) {
+        var frameList = this.getFrameList();
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
