@@ -48,24 +48,26 @@ def load_data_file(*args):
     return data
 
 
-def load_page_data(href, *args):
-    parse_result = urlparse(href)
-    host_name = parse_result.hostname
-    url_path = parse_result.path
-
-
-def store_data(data, keys, *args):
-    filepath = os.path.join(*args)
+def store_data_file(data, keys, *args):
 
     if not data:
         return True
 
+    file_path = os.path.join(*args)
+    file_dir = os.path.dirname(file_path)
+
+    try:
+        os.makedirs(file_dir, 0700)
+    except OSError:
+        os.chmod(file_dir, 0700)
+
     dataout = yaml.dump(data, default_flow_style=False, explicit_start=True)
+
     success = False
     try:
         if keys is not None and len(keys) > 0:
             dataout = str(gpg.encrypt(dataout, keys))
-        f = open(filepath, 'w')
+        f = open(file_path, 'w')
         f.write(dataout)
         f.close()
         success = True
@@ -73,6 +75,22 @@ def store_data(data, keys, *args):
         pass
 
     return success
+
+
+def gen_data_dir(href):
+    parse_result = urlparse(href)
+
+    hostname = re.sub('^www[^.]*\.', '', parse_result.hostname).lower()
+    path = re.sub('index\.[^.]+$', '', parse_result.path).lower()
+
+    return os.path.join(uzbl_forms_dir, hostname, *path.split('/'))
+
+
+def load_page_data(href, *args):
+    return load_data_file(gen_data_dir(href), *args)
+
+
+def store_page_data
 
 
 def send_javascript(script):
@@ -148,11 +166,6 @@ def store_action(keys):
         page_data_dir = os.path.join(uzbl_forms_dir,
                                      hostname,
                                      *pathname.split('/'))
-        try:
-            os.makedirs(page_data_dir, 0700)
-        except OSError:
-            os.chmod(page_data_dir, 0700)
-
         page_data = load_data(page_data_dir, 'data.yml.asc')
         form_data_list = page_data.get(formname, [])
         form_data_list = [{'href': dumped_form_data.get('href', None),
