@@ -90,7 +90,7 @@ def load_page_data(href, *args):
     return load_data_file(gen_data_dir(href), *args)
 
 
-def store_page_data(data, keys, href):
+def store_page_data(data, keys, href, *args):
     return store_data_file(data, keys, gen_data_dir(href), *args)
 
 
@@ -156,23 +156,23 @@ def load_action():
 def store_action(keys):
 
     for dumped_form_data in get_form_data_list():
-        dumped_form_name = dumped_form_data.get('name', '__noname__')
-        dumped_form_href = dumped_form_data.get('href', 'noproto://undefined')
-        dumped_form_data_list = [
-            {'href': dumped_form_href,
+        form_name = dumped_form_data.get('name', '__noname__')
+        form_href = dumped_form_data.get('href', 'noproto://undefined')
+        form_data_list = [
+            {'href': form_href,
              'elements': dumped_form_data.get('elements', [])}]
-        page_data = load_page_data(dumped_form_href, 'data.yml.asc')
-        page_data[dumped_form_name] = dumped_form_data_list
-        store_page_data(page_data, keys, page_data_dir, 'data.yml.asc')
+        page_data = load_page_data(form_href, 'data.yml.asc')
+        page_data[form_name] = form_data_list
+        store_page_data(page_data, keys, form_href, 'data.yml.asc')
 
-        page_metadata = load_data(page_data_dir, 'meta.yml')
-        form_metadata = page_metadata.get(formname, {})
+        page_metadata = load_page_data(form_href, 'meta.yml')
+        form_metadata = page_metadata.get(form_name, {})
         form_metadata.setdefault('autoloadIdx', -1)
         form_metadata['elements'] = list(set(e.get('name', None)
                                              for f in form_data_list
                                              for e in f.get('elements')))
-        page_metadata[formname] = form_metadata
-        store_data(page_metadata, None, page_data_dir, 'meta.yml')
+        page_metadata[form_name] = form_metadata
+        store_page_data(page_metadata, None, form_href, 'meta.yml')
 
     notify_user('Form data saved!')
 
