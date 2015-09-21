@@ -101,6 +101,7 @@ def send_javascript(script):
         s.connect(os.environ.get('UZBL_SOCKET', None))
         s.sendall('js {};\n'.format(script))
         response = s.recv(RECV_BUFSIZE)
+        print response
         s.close()
     except:
         pass
@@ -140,7 +141,7 @@ def get_href_list():
 
 def update_forms(form_data_dict):
     send_javascript(
-        'uzbl.formfiller.load({})'.format(json.dumps(form_data_dict)))
+        'uzbl.formfiller.updateForms({})'.format(json.dumps(form_data_dict)))
     return 0
 
 
@@ -155,7 +156,6 @@ def load_action():
                 continue
             form_data_dict[href][form_name] = form_data_list[0]
 
-    print form_data_dict
     return update_forms(form_data_dict)
 
 
