@@ -132,9 +132,8 @@ def store_action(keys):
             os.chmod(page_data_dir, 0700)
 
         page_data = load_data(page_data_dir, 'data.yml.asc')
-        form_data = page_data.get(formname, {'href': dumped_form_data['href']})
-        form_data_list = form_data.get('data', [])
-        form_data_list.append(form_data)
+        form_data_list = page_data.get(formname, [])
+        form_data_list.append(dumped_form_data)
         page_data[formname] = form_data_list
         store_data(page_data, keys, page_data_dir, 'data.yml.asc')
 
