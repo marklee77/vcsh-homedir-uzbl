@@ -16,6 +16,7 @@
 import gtk
 import json
 import os
+import re
 import socket
 import sys
 import yaml
@@ -114,10 +115,13 @@ def store_action(keys):
         # for now, remove www. from start of hostname and index.* from end of
         # path name. Will re-examine this decision if it causes problems later.
         # alternatively, may want regex to filter www04, securewww, etc...
-        hostname = form_data['hostname']
-        if hostname.startswith('www.'):
-            hostname = hostname[4:]
-        pathname = form_data['pathname']
+        hostname = re.sub('^www[^.]*\.', '', form_data['hostname'])
+        pathname = re.sub('index\.[^.]+$', '', form_data['pathname'])
+        form_data_dir = os.path.join(uzbl_forms_dir, 
+                                     hostname, 
+                                     *pathname.split('/'))
+
+
 
     retval = 0
 
