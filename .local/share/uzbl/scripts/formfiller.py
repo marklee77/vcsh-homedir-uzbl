@@ -34,11 +34,11 @@ uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'formdata')
 RECV_BUFSIZE = 1024*1024
 
 
-def load_data(name):
-    filepath = os.path.join(uzbl_forms_dir, name + '.yml.asc')
+def load_data(filepath):
     data = {}
 
     try:
+        if len(filepath) > 4 and filepath[:-4]
         data = yaml.load(str(gpg.decrypt_file(open(filepath, 'r'))))
     except:
         pass
