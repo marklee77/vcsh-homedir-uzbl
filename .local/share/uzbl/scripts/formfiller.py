@@ -14,6 +14,7 @@
 #   - check for https when loading
 #   - autoload
 import gtk
+import itertools
 import json
 import os
 import re
@@ -138,9 +139,10 @@ def store_action(keys):
         page_metadata = load_data(page_data_dir, 'meta.yml')
         form_metadata = page_metadata.get(formname, {})
         form_metadata.setdefault('autoloadIdx', -1)
+        print [e.get('name', None) for f in form_data_list for e in f.get('elements')]
+        print list(itertools.chain(*[e.get('name', None) for e in f.get('elements', []) for f in form_data_list]))
         form_metadata['elements'] = list(set(
-            form_metadata.get('elements', []) +
-            [e.get('name', None) for e in form_data.get('elements', [])]))
+            itertools.chain(*[f.get('elements', []) for f in form_data_list])))
         page_metadata[formname] = form_metadata
         store_data(page_metadata, None, page_data_dir, 'meta.yml')
 
