@@ -115,13 +115,15 @@ def store_action(keys):
         # for now, remove www. from start of hostname and index.* from end of
         # path name. Will re-examine this decision if it causes problems later.
         # alternatively, may want regex to filter www04, securewww, etc...
-        hostname = re.sub('^www[^.]*\.', '', form_data['hostname'])
-        pathname = re.sub('index\.[^.]+$', '', form_data['pathname'])
-        form_data_dir = os.path.join(uzbl_forms_dir, 
-                                     hostname, 
+        hostname = re.sub('^www[^.]*\.', '', form_data['hostname']).lower()
+        pathname = re.sub('index\.[^.]+$', '', form_data['pathname']).lower()
+        form_data_dir = os.path.join(uzbl_forms_dir,
+                                     hostname,
                                      *pathname.split('/'))
-
-
+        try:
+            os.makedirs(form_data_dir, 0700)
+        except OSError:
+            os.chmod(form_data_dir, 0700)
 
     retval = 0
 
