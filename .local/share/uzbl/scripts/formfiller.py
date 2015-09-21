@@ -118,7 +118,7 @@ def store_action(keys):
         # for now, remove www. from start of hostname and index.* from end of
         # path name. Will re-examine this decision if it causes problems later.
         # alternatively, may want regex to filter www04, securewww, etc...
-        formname = dumped_form_data.get('hostname', '__noname__')
+        formname = dumped_form_data.get('name', '__noname__')
         hostname = re.sub('^www[^.]*\.', '',
                           dumped_form_data['hostname']).lower()
         pathname = re.sub('index\.[^.]+$', '',
@@ -133,7 +133,8 @@ def store_action(keys):
 
         page_data = load_data(page_data_dir, 'data.yml.asc')
         form_data_list = page_data.get(formname, [])
-        form_data_list.append(dumped_form_data)
+        form_data_list = [{'href': dumped_form_data.get('href', None),
+                           'elements': dumped_form_data.get('elements', [])}]
         page_data[formname] = form_data_list
         store_data(page_data, keys, page_data_dir, 'data.yml.asc')
 
@@ -146,14 +147,9 @@ def store_action(keys):
         page_metadata[formname] = form_metadata
         store_data(page_metadata, None, page_data_dir, 'meta.yml')
 
-    # save site form data and return result
-    #retval = store_data(data, keys)
+    notify_user('Form data saved!')
 
-    #if retval:
-    #    notify_user('Form data saved!')
-
-    retval = 0
-    return retval
+    return 0
 
 
 def main(argv=None):
