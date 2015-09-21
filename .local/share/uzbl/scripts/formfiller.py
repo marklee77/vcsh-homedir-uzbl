@@ -85,13 +85,19 @@ def send_javascript(script):
 def dump_window_form_data_list():
     response = send_javascript('JSON.stringify(uzbl.formfiller.dump())')
     _, json_retval = response.split('\n', 1)
-    return yaml.load(json_retval)
+    retval = yaml.load(json_retval)
+    if not isinstance(retval, list):
+        retval = []
+    return retval
 
 
 def get_window_href_list():
     response = send_javascript('JSON.stringify(uzbl.formfiller.getHrefList())')
     _, json_retval = response.split('\n', 1)
-    return yaml.load(json_retval)
+    retval = yaml.load(json_retval)
+    if not isinstance(retval, list):
+        retval = []
+    return retval
 
 
 def update_window_form_data(data):
@@ -100,7 +106,6 @@ def update_window_form_data(data):
 
 
 def notify_user(message):
-    #send_javascript('alert("{}")'.format(message))
     dialog = gtk.MessageDialog(
         None,
         gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -113,7 +118,8 @@ def notify_user(message):
 
 def load_action():
 
-        
+    for href in get_window_href_list():
+        print href
     #data = load_data(filepath)
     #window_data = data.get(window_urlpath, None)
     #return update_window_form_data(window_data)

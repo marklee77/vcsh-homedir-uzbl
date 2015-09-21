@@ -17,7 +17,7 @@ uzbl.formfiller = {
             hrefList.push(frameList[i].location.href);
         }
         return hrefList;
-    }
+    },
 
     dump: function() {
         var frameList = this.getFrameList(window);
