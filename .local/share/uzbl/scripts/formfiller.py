@@ -119,6 +119,7 @@ def store_action(keys):
         # for now, remove www. from start of hostname and index.* from end of
         # path name. Will re-examine this decision if it causes problems later.
         # alternatively, may want regex to filter www04, securewww, etc...
+        formname = form_data.get('hostname', '__noname__')
         hostname = re.sub('^www[^.]*\.', '', form_data['hostname']).lower()
         pathname = re.sub('index\.[^.]+$', '', form_data['pathname']).lower()
         form_data_dir = os.path.join(uzbl_forms_dir,
@@ -129,13 +130,14 @@ def store_action(keys):
         except OSError:
             os.chmod(form_data_dir, 0700)
 
-        metadata = load_data(form_data_dir, 'meta.yml')
+        metadata = load_data(form_data_dir, 'meta.yml').get(formname, {})
+        print metadata
         # metadata org: by name or by index? need autoload, list of variables
         # how to handle multiples? how is data indexed?
-        metadata[form_data['name']] = {
-            'autoload': False,
-            'elements': [e.get('name', '') for e in form_data['elements']]
-        }
+
+        metadata.setdefault('autoloadIdx', -1)
+        metadata['elements'] = set(metadata.get('elements', []) +
+                                   form_data.get('elements', []))
         store_data(metadata, None, form_data_dir, 'meta.yml')
 
     # save site form data and return result
