@@ -34,18 +34,21 @@ uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'formdata')
 RECV_BUFSIZE = 1024*1024
 
 
-def load_data(filepath):
+def load_data(*args):
+    filepath = os.path.join(*args)
     data = {}
 
     try:
-        if len(filepath) > 4 and filepath[:-4]
-        data = yaml.load(str(gpg.decrypt_file(open(filepath, 'r'))))
+        if filepath[-4:] in ['.asc', '.gpg']:
+            data = yaml.load(str(gpg.decrypt_file(open(filepath, 'r'))))
+        else:
+            data = yaml.load(open(filepath, 'r'))
     except:
         pass
     return data
 
 
-def store_data(data, name, keys):
+def store_data(data, keys, *args):
     filepath = os.path_join(uzbl_forms_dir, name + '.yml.asc')
 
     if not data:
@@ -125,14 +128,15 @@ def store_action(keys):
         except OSError:
             os.chmod(form_data_dir, 0700)
 
-    retval = 0
-
+        metadata = load_data(form_data_dir, 'meta.yml')
+        
     # save site form data and return result
     #retval = store_data(data, keys)
 
     #if retval:
     #    notify_user('Form data saved!')
 
+    retval = 0
     return retval
 
 
