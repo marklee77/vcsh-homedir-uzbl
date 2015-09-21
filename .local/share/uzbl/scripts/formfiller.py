@@ -43,7 +43,7 @@ def load_data(*args):
             data = yaml.load(str(gpg.decrypt_file(open(filepath, 'r'))))
         else:
             data = yaml.load(open(filepath, 'r'))
-    except:
+    except IOError:
         pass
     return data
 
@@ -54,14 +54,13 @@ def store_data(data, keys, *args):
     if not data:
         return True
 
+    dataout = yaml.dump(data, default_flow_style=False, explicit_start=True)
     success = False
     try:
+        if keys is not None and len(keys) > 0:
+            dataout = str(gpg.encrypt(dataout, keys))
         f = open(filepath, 'w')
-        if 
-        f.write(
-str(gpg.encrypt(yaml.dump(data,
-                                          default_flow_style=False,
-                                          explicit_start=True), keys)))
+        f.write(dataout)
         f.close()
         success = True
     except:
@@ -133,11 +132,11 @@ def store_action(keys):
         metadata = load_data(form_data_dir, 'meta.yml')
         # metadata org: by name or by index? need autoload, list of variables
         # how to handle multiples? how is data indexed?
-        metadata['name'] = {
+        metadata[form_data['name']] = {
             'autoload': False,
-            'elements': [e.name for e in form_data['elements']]
+            'elements': [e.get('name', '') for e in form_data['elements']]
         }
-        store_data(metadata, [], form_data_dir, 'meta.yml')
+        store_data(metadata, None, form_data_dir, 'meta.yml')
 
     # save site form data and return result
     #retval = store_data(data, keys)
