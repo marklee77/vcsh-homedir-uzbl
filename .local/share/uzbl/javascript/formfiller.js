@@ -1,6 +1,10 @@
 uzbl.formfiller = {
 
-    getFrameList: function(frame) {
+    getFrameList: function() {
+        var frame = window;
+        if (arguments.length > 0) {
+            frame = arguments[0];
+        }
         var frameList = new Array(frame);
 
         for (var i = 0; i < frame.frames.length; i++) {
