@@ -14,7 +14,6 @@
 #   - check for https when loading
 #   - autoload
 import gtk
-import itertools
 import json
 import os
 import re
@@ -24,7 +23,6 @@ import yaml
 
 from argparse import ArgumentParser
 from gnupg import GPG
-from urlparse import urlparse
 from xdg.BaseDirectory import xdg_data_home
 
 gpg = GPG()
@@ -116,13 +114,15 @@ def load_action():
 
 def store_action(keys):
 
-    for form_data in dump_window_form_data_list():
+    for dumped_form_data in dump_window_form_data_list():
         # for now, remove www. from start of hostname and index.* from end of
         # path name. Will re-examine this decision if it causes problems later.
         # alternatively, may want regex to filter www04, securewww, etc...
-        formname = form_data.get('hostname', '__noname__')
-        hostname = re.sub('^www[^.]*\.', '', form_data['hostname']).lower()
-        pathname = re.sub('index\.[^.]+$', '', form_data['pathname']).lower()
+        formname = dumped_form_data.get('hostname', '__noname__')
+        hostname = re.sub('^www[^.]*\.', '',
+                          dumped_form_data['hostname']).lower()
+        pathname = re.sub('index\.[^.]+$', '',
+                          dumped_form_data['pathname']).lower()
         page_data_dir = os.path.join(uzbl_forms_dir,
                                      hostname,
                                      *pathname.split('/'))
@@ -132,17 +132,18 @@ def store_action(keys):
             os.chmod(page_data_dir, 0700)
 
         page_data = load_data(page_data_dir, 'data.yml.asc')
-        form_data_list = page_data.get(formname, [])
+        form_data = page_data.get(formname, {'href': dumped_form_data['href']})
+        form_data_list = form_data.get('data', [])
         form_data_list.append(form_data)
+        page_data[formname] = form_data_list
         store_data(page_data, keys, page_data_dir, 'data.yml.asc')
 
         page_metadata = load_data(page_data_dir, 'meta.yml')
         form_metadata = page_metadata.get(formname, {})
         form_metadata.setdefault('autoloadIdx', -1)
-        print [e.get('name', None) for f in form_data_list for e in f.get('elements')]
-        print list(itertools.chain(*[e.get('name', None) for e in f.get('elements', []) for f in form_data_list]))
-        form_metadata['elements'] = list(set(
-            itertools.chain(*[f.get('elements', []) for f in form_data_list])))
+        form_metadata['elements'] = list(set(e.get('name', None)
+                                             for f in form_data_list
+                                             for e in f.get('elements')))
         page_metadata[formname] = form_metadata
         store_data(page_metadata, None, page_data_dir, 'meta.yml')
 
