@@ -159,13 +159,16 @@ def store_action(keys):
         page_data[href] = [[form_data] for form_data in form_data_list]
         store_page_data(page_data, keys, href, 'data.yml.asc')
 
-        #page_metadata = load_page_data(href, 'meta.yml')
-        #for form_data in form_data_list:
-        #    form_metadata.setdefault('autoloadIdx', -1)
-        #    form_metadata['name'] = form_data.get('name', None)
-        #    form_metadata['elements'] = form_data.get('elements', [])
-        #page_metadata[href] = form_metadata
-        #store_page_data(page_metadata, None, form_href, 'meta.yml')
+        form_metadata_list = []
+        for form_data in form_data_list:
+            form_metadata = {}
+            form_metadata.setdefault('autoloadIdx', -1)
+            form_metadata['name'] = form_data.get('name', None)
+            form_metadata['elements'] = form_data.get('elements', [])
+            form_metadata_list.append(form_metadata)
+        page_metadata = load_page_data(href, 'meta.yml')
+        page_metadata[href] = form_metadata_list
+        store_page_data(page_metadata, None, href, 'meta.yml')
 
     notify_user('Form data saved!')
 

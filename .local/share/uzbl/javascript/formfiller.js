@@ -34,8 +34,7 @@ uzbl.formfiller = {
                 var formDataList = [];
                 for (var j = 0; j < frameFormList.length; j++) {
                     var form = frameFormList[j];
-                    var formData = {'href': frame.location.href,
-                                    'name': form.name,
+                    var formData = {'name': form.name,
                                     'elements': []}
                     for(var k = 0; k < form.elements.length; k++) {
                         var element = form.elements[k];
