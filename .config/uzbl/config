@@ -1,6 +1,3 @@
-# Example uzbl config. All settings are optional. You can use uzbl without
-# any config at all (but it won't do much).
-
 # === Core settings ==========================================================
 
 # common directory locations
@@ -10,11 +7,11 @@ set cache_home  = @(echo $XDG_CACHE_HOME/uzbl)@
 set config_home = @(echo $XDG_CONFIG_HOME/uzbl)@
 
 # Interface paths.
-set comm_dir = @([ -n "$XDG_RUNTIME_DIR" ] && mkdir -p $XDG_RUNTIME_DIR/uzbl && echo "$XDG_RUNTIME_DIR/uzbl" || echo "/tmp/uzbl-$USER")@
-set fifo_dir = @comm_dir
-set socket_dir = @comm_dir
+set comm_dir    = @([ -n "$XDG_RUNTIME_DIR" ] && mkdir -p $XDG_RUNTIME_DIR/uzbl && echo "$XDG_RUNTIME_DIR/uzbl" || echo "/tmp/uzbl-$USER")@
+set fifo_dir    = @comm_dir
+set socket_dir  = @comm_dir
 
-set shell_cmd = sh -c
+set shell_cmd   = sh -c
 
 # === General config aliases =================================================
 
@@ -36,43 +33,25 @@ set set_mode        = set mode =
 set set_status      = set status_message =
 
 # Spawn path shortcuts. In spawn the first dir+path match is used in "dir1:dir2:dir3:executable"
-set scripts_dir      = @data_home:@prefix/share/uzbl/examples/data:scripts
+set scripts_dir     = @data_home:@prefix/share/uzbl/examples/data:scripts
 
 # === Hardcoded handlers =====================================================
 
 # These handlers can't be moved to the new event system yet as we don't
 # support events that can wait for a response from a script.
-set scheme_handler      = sync_spawn @scripts_dir/scheme.py
-#set request_handler     = sync_spawn @scripts_dir/request.py
+set scheme_handler         = sync_spawn @scripts_dir/scheme.py
+#set request_handler        = sync_spawn @scripts_dir/request.py
 set authentication_handler = sync_spawn @scripts_dir/auth.py
-set download_handler    = sync_spawn @scripts_dir/download.sh
+set download_handler       = sync_spawn @scripts_dir/download.sh
 
 # === Dynamic event handlers =================================================
 
-#   What to do when a website wants to open a new window:
-# Open link in new window
 @on_event   NEW_WINDOW     sh 'uzbl-browser ${1:+-u "$1"}' %r
-# Open in current window (also see the REQ_NEW_WINDOW event handler below)
-#@on_event   NEW_WINDOW     uri %s
-# Open in new tab. Other options are NEW_TAB_NEXT, NEW_BG_TAB and NEW_BG_TAB_NEXT.
-#@on_event   NEW_WINDOW     event NEW_TAB %s
-
-#   What to do when the user requests a new window:
-# If your the NEW_WINDOW handler opens the uri in the current window, you'll
-# probably want to change this handler to open a new window or tab.
 @on_event   REQ_NEW_WINDOW event NEW_WINDOW %s
-
-# Load start handler
 @on_event   LOAD_START     @set_status <span foreground="khaki">wait</span>
-# Reset the keycmd on navigation
 @on_event   LOAD_START     @set_mode
-
-# Load commit handlers
 @on_event   LOAD_COMMIT    @set_status <span foreground="green">recv</span>
-
-  # add some javascript to the page for other 'js' and 'script' commands to access later.
 @on_event   LOAD_COMMIT    js uzbl = {};
-#@on_event   LOAD_COMMIT    script @scripts_dir/formfiller.js
 @on_event   LOAD_COMMIT    script @data_home/javascript/formfiller.js
 @on_event   LOAD_COMMIT    script @scripts_dir/follow.js
 
