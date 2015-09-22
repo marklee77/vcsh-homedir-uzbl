@@ -94,7 +94,7 @@ def send_javascript(script):
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(os.environ.get('UZBL_SOCKET', None))
-        s.sendall('js {};\n'.format(script))
+        s.sendall('js {};\n'.format(script.replace('@', '\@')))
         response = s.recv(RECV_BUFSIZE)
         print response
         s.close()
@@ -135,8 +135,6 @@ def get_href_list():
 
 
 def update_forms(form_data_list_page_dict):
-    print form_data_list_page_dict
-    print json.dumps(form_data_list_page_dict)
     send_javascript('uzbl.formfiller.updateForms({})'.format(
         json.dumps(form_data_list_page_dict)))
     return 0
@@ -165,7 +163,8 @@ def store_action(keys):
             form_metadata = {}
             form_metadata.setdefault('autoloadIdx', -1)
             form_metadata['name'] = form_data.get('name', None)
-            form_metadata['elements'] = form_data.get('elements', [])
+            form_metadata['elements'] = [e.get('name', None) for e in
+                                         form_data.get('elements', [])]
             form_metadata_list.append(form_metadata)
         page_metadata = load_page_data(href, 'meta.yml')
         page_metadata[href] = form_metadata_list
