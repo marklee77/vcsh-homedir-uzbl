@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # features to add:
+#   - go back to using position instead of form name...
 #   - multiple data for same form (load cycles, or specify)
 #   - use meta to hint that data is available
 #   - password generation

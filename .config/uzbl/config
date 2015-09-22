@@ -1,6 +1,7 @@
 # === Core settings ==========================================================
 # FIXME: need a view source...
 # FIXME: figure out all the follow links / clipboard stuff
+# FIXME: mailto links open urxvt with mutt
 
 # common directory locations
 set prefix      = @(echo $PREFIX)@
