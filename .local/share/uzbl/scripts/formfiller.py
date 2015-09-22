@@ -96,7 +96,6 @@ def send_javascript(script):
         s.connect(os.environ.get('UZBL_SOCKET', None))
         s.sendall('js {};\n'.format(script.replace('@', '\@')))
         response = s.recv(RECV_BUFSIZE)
-        print response
         s.close()
     except:
         pass
