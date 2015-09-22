@@ -60,13 +60,15 @@ uzbl.formfiller = {
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
-            var frameFormDataDict = formDataDict[frame.location.href];
+            var frameFormDataList = formDataDict[frame.location.href];
             try {
                 frameFormList = frame.document.getElementsByTagName('form');
-                for (var j = 0; j < frameFormList.length; j++) 
+                for (var j = 0; 
+                    j < frameFormList.length && j < frameFormDataList.length; 
+                    j++) 
                 {
                     var form = frameFormList[j];
-                    var formData = frameFormDataDict[form.name];
+                    var formData = frameFormDataList[j];
                     for (var k = 0; j < formData.elements.length; k++) {
                         var elementData = formData.elements[k];
                         var element = form.elements[elementData.name];
