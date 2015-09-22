@@ -135,6 +135,8 @@ def get_href_list():
 
 
 def update_forms(form_data_list_page_dict):
+    print form_data_list_page_dict
+    print json.dumps(form_data_list_page_dict)
     send_javascript('uzbl.formfiller.updateForms({})'.format(
         json.dumps(form_data_list_page_dict)))
     return 0
