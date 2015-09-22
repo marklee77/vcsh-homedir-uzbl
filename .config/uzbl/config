@@ -1,4 +1,6 @@
 # === Core settings ==========================================================
+# FIXME: need a view source...
+# FIXME: figure out all the follow links / clipboard stuff
 
 # common directory locations
 set prefix      = @(echo $PREFIX)@
@@ -282,6 +284,8 @@ set ebind     = @mode_bind global,-insert
 @cbind  zS  = event REQ_NEW_WINDOW \@(echo "$UZBL_URI" | sed -e 's/^http:/https:/')\@
 
 # Yanking & pasting binds
+# FIXME: I want to use -sel clipboard, but not sure how that works w/ @
+# clipboard...
 @cbind  yu  = sh 'echo -n "$UZBL_URI" | xclip -i -sel clipboard'
 @cbind  yU  = sh 'echo -n "$1" | xclip -i -sel clipboard' '\@SELECTED_URI'
 @cbind  yy  = sh 'echo -n "$UZBL_TITLE" | xclip -i -sel clipboard'
