@@ -72,7 +72,6 @@ uzbl.formfiller = {
                     var formData = formDataList[j];
                     for (var k = 0; j < formData.elements.length; k++) {
                         var elementData = formData.elements[k];
-                        alert(elementData.name + " " + elementData.value);
                         var element = form.elements[elementData.name];
                         try {
                             if (['checkbox', 'radio'].indexOf(elementData.type) 
