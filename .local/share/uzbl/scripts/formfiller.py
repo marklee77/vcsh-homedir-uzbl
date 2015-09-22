@@ -7,6 +7,7 @@
 #   - capture available values from select box
 #   - check for https when loading
 #   - autoloading
+#   - future feature enhancement...tag all forms with unique id in javascript?
 import gtk
 import json
 import os
