@@ -56,20 +56,20 @@ uzbl.formfiller = {
         return formDataListPageDict;
     },
 
-    updateForms: function(formDataDict) {
+    updateForms: function(formDataListPageDict) {
         var frameList = this.getFrameList();
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
-            var frameFormDataList = formDataDict[frame.location.href];
+            var formDataList = formDataListPageDict[frame.location.href];
             try {
-                frameFormList = frame.document.getElementsByTagName('form');
+                formList = frame.document.getElementsByTagName('form');
                 for (var j = 0; 
-                    j < frameFormList.length && j < frameFormDataList.length; 
-                    j++) 
+                     j < formList.length && j < formDataList.length; 
+                     j++) 
                 {
-                    var form = frameFormList[j];
-                    var formData = frameFormDataList[j];
+                    var form = formList[j];
+                    var formData = formDataList[j];
                     for (var k = 0; j < formData.elements.length; k++) {
                         var elementData = formData.elements[k];
                         var element = form.elements[elementData.name];

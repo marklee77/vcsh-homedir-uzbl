@@ -133,18 +133,18 @@ def get_href_list():
     return retval
 
 
-def update_forms(form_data_dict):
-    send_javascript(
-        'uzbl.formfiller.updateForms({})'.format(json.dumps(form_data_dict)))
+def update_forms(form_data_list_page_dict):
+    send_javascript('uzbl.formfiller.updateForms({})'.format(
+        json.dumps(form_data_list_page_dict)))
     return 0
 
 
 def load_action():
 
-    form_data_dict = {}
+    form_data_list_page_dict = {}
     for href in get_href_list():
-        form_data_dict[href] = {}
-        page_data = load_page_data(href, 'data.yml.asc')
+        form_data_list_page_dict[href] = {}
+        form_data_list = load_page_data(href, 'data.yml.asc')
         for form_name, form_data_list in page_data.items():
             if len(form_data_list) == 0:
                 continue
