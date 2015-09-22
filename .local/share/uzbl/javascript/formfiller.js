@@ -18,7 +18,7 @@ uzbl.formfiller = {
         var frameList = this.getFrameList();
         var hrefList = new Array();
         for (var i = 0; i < frameList.length; i++) {
-            hrefList.push(frameList[i].location.href);
+            hrefList.push(frameList[i].location.href.split('?')[0]);
         }
         return hrefList;
     },
@@ -49,7 +49,8 @@ uzbl.formfiller = {
                     }
                     formDataList.push(formData)
                 }
-                formDataListPageDict[frame.location.href] = formDataList;
+                formDataListPageDict[frame.location.href.split('?')[0]] = 
+                    formDataList;
             }
             catch (err) { }
         }
@@ -61,7 +62,8 @@ uzbl.formfiller = {
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
-            var formDataList = formDataListPageDict[frame.location.href];
+            var formDataList = 
+                formDataListPageDict[frame.location.href.split('?')[0]];
             try {
                 formList = frame.document.getElementsByTagName('form');
                 for (var j = 0; 
