@@ -23,14 +23,15 @@ uzbl.formfiller = {
         return hrefList;
     },
 
-    getFormDataList: function() {
+    getFormDataListPageDict: function() {
         var frameList = this.getFrameList();
-        var formDataList = [];
+        var formDataListPageDict = {};
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
             try {
                 var frameFormList = frame.document.getElementsByTagName('form');
+                var formDataList = [];
                 for (var j = 0; j < frameFormList.length; j++) {
                     var form = frameFormList[j];
                     var formData = {'href': frame.location.href,
@@ -49,10 +50,11 @@ uzbl.formfiller = {
                     }
                     formDataList.push(formData)
                 }
+                formDataListPageDict[frame.location.href] = formDataList;
             }
             catch (err) { }
         }
-        return formDataList;
+        return formDataListPageDict;
     },
 
     updateForms: function(formDataDict) {
