@@ -326,9 +326,9 @@ set ebind     = @mode_bind global,-insert
 @cbind  zS  = event REQ_NEW_WINDOW \@(echo "$UZBL_URI" | sed -e 's/^http:/https:/')\@
 
 # Yanking & pasting binds
-@cbind  yu  = sh 'echo -n "$UZBL_URI" | xclip'
-@cbind  yU  = sh 'echo -n "$1" | xclip' '\@SELECTED_URI'
-@cbind  yy  = sh 'echo -n "$UZBL_TITLE" | xclip'
+@cbind  yu  = sh 'echo -n "$UZBL_URI" | xclip -i -sel clipboard'
+@cbind  yU  = sh 'echo -n "$1" | xclip -i -sel clipboard' '\@SELECTED_URI'
+@cbind  yy  = sh 'echo -n "$UZBL_TITLE" | xclip -i -sel clipboard'
 @cbind  ys  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followSelection('returnuri') >\@ clipboard
 
 # Clone current window
