@@ -32,7 +32,6 @@ set toggle_modes    = request TOGGLE_MODES
 set set_mode        = set mode =
 set set_status      = set status_message =
 
-# Spawn path shortcuts. In spawn the first dir+path match is used in "dir1:dir2:dir3:executable"
 set scripts_dir     = @data_home:@prefix/share/uzbl/examples/data:scripts
 
 # === Hardcoded handlers =====================================================
@@ -54,28 +53,16 @@ set download_handler       = sync_spawn @scripts_dir/download.sh
 @on_event   LOAD_COMMIT    js uzbl = {};
 @on_event   LOAD_COMMIT    script @data_home/javascript/formfiller.js
 @on_event   LOAD_COMMIT    script @scripts_dir/follow.js
-
-# Userscripts/per-site-settings. See the script and the example configuration for details
 #@on_event   LOAD_COMMIT    spawn @scripts_dir/per-site-settings.py @data_home/per-site-settings
-
-# Load finish handlers
 @on_event   LOAD_FINISH    @set_status <span foreground="gold">done</span>
 @on_event   LOAD_FINISH    spawn @scripts_dir/history.sh
-
-# Switch to insert mode if a (editable) html form is clicked
 @on_event   FOCUS_ELEMENT  sh 'if [ "$1" = INPUT -o "$1" = TEXTAREA -o "$1" = SELECT ]; then echo "@set_mode insert" > $UZBL_FIFO; fi' %s
-# Switch to command mode if anything else is clicked
 @on_event   ROOT_ACTIVE    @set_mode command
-
-# Example CONFIG_CHANGED event handler
 #@on_event  CONFIG_CHANGED print Config changed: %1 = %2
-
-# Scroll percentage calculation
 @on_event   SCROLL_VERT    set scroll_message = \@<(function(curr, min, max, size){if(max == size) return '--'; var p=(curr/(max - size)); return Math.round(10000*p)/100;})(%1,%2,%3,%4)>\@%
 
 # === Behaviour and appearance ===============================================
 
-# Custom CSS can be defined here, including link follower hint styles
 set stylesheet_uri = file://@config_home/style.css
 
 set show_status       = 1
@@ -129,13 +116,13 @@ set useragent         = Uzbl (Webkit @{WEBKIT_MAJOR}.@{WEBKIT_MINOR}) (@(+uname 
 
 # === SSL related configuration ==============================================
 
-# Set it to certificates store of your distribution, or your own CAfile.
 set ssl_ca_file = /etc/ssl/certs/ca-certificates.crt
 set ssl_verify = 1
+
+@on_event   LOAD_ERROR    js var patt=new RegExp('SSL handshake failed'); if (patt.test('%3')) {alert ('%3');}
+
 # Command to toggle ssl_verify value:
 @cbind  !ssl = chain 'toggle ssl_verify' 'reload'
-# Example SSL error handler:
-@on_event   LOAD_ERROR    js var patt=new RegExp('SSL handshake failed'); if (patt.test('%3')) {alert ('%3');}
 
 # === Key binding configuration ==============================================
 # --- Internal modmapping and ignoring ---------------------------------------
@@ -198,16 +185,6 @@ set ebind     = @mode_bind global,-insert
 @ebind <Up>          = event HISTORY_PREV
 @ebind <Down>        = event HISTORY_NEXT
 @ebind <Ctrl>r<search:>_ = event HISTORY_SEARCH %s
-# Keycmd injection/append examples.
-#@ebind  <Ctrl>su = event INJECT_KEYCMD \@uri
-#@ebind  <Ctrl>st = event INJECT_KEYCMD \@title
-#@ebind  <Ctrl>du = event APPEND_KEYCMD \@uri
-#@ebind  <Ctrl>dt = event APPEND_KEYCMD \@title
-
-# --- Mouse bindings ---------------------------------------------------------
-
-# Middle click open in new window
-@bind  <Button2>  = sh 'if [ "$1" ]; then echo "event REQ_NEW_WINDOW $1" > "$UZBL_FIFO"; else echo "uri $(xclip -o | sed s/\\\@/%40/g)" > "$UZBL_FIFO"; fi' '\@SELECTED_URI'
 
 # --- Keyboard bindings ------------------------------------------------------
 
@@ -282,12 +259,10 @@ set ebind     = @mode_bind global,-insert
 
 # Use socat to directly inject commands into uzbl-core and view events
 # raised by uzbl-core:
-@cbind  <Ctrl><Mod1>t  = sh 'xterm -e "socat unix-connect:\"$UZBL_SOCKET\" -"'
-#@cbind  <Ctrl><Mod1>t  = sh 'urxvt -e socat unix-connect:"$UZBL_SOCKET" -'
+@cbind  <Ctrl><Mod1>t  = sh 'urxvt -e socat unix-connect:"$UZBL_SOCKET" -'
 
 # Uri opening prompts
 @cbind  o<uri:>_       = uri %s
-# Or have it load the current uri into the keycmd for editing
 @cbind  O<uri:\@uri>_  = uri %s
 
 # Mode setting binds
@@ -301,6 +276,8 @@ set ebind     = @mode_bind global,-insert
 @cbind  gw  = event REQ_NEW_WINDOW
 
 # SSL-ify bindings
+# FIXME: don't know if these are useful, but make it obvious if page is not
+# secure
 @cbind  zs  = uri \@(echo "$UZBL_URI" | sed -e 's/^http:/https:/')\@
 @cbind  zS  = event REQ_NEW_WINDOW \@(echo "$UZBL_URI" | sed -e 's/^http:/https:/')\@
 
