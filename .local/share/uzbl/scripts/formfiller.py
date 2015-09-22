@@ -95,7 +95,6 @@ def send_javascript(script):
         s.connect(os.environ.get('UZBL_SOCKET', None))
         s.sendall('js {};\n'.format(script))
         response = s.recv(RECV_BUFSIZE)
-        print response
         s.close()
     except:
         pass
@@ -114,13 +113,13 @@ def notify_user(message):
     dialog.run()
 
 
-def get_form_data_list():
+def get_form_data_list_page_dict():
     response = send_javascript(
-        'JSON.stringify(uzbl.formfiller.getFormDataList())')
+        'JSON.stringify(uzbl.formfiller.getFormDataListPageDict())')
     _, json_retval = response.split('\n', 1)
     retval = yaml.load(json_retval)
-    if not isinstance(retval, list):
-        retval = []
+    if not isinstance(retval, dict):
+        retval = {}
     return retval
 
 
@@ -155,24 +154,18 @@ def load_action():
 
 def store_action(keys):
 
-    for dumped_form_data in get_form_data_list():
-        form_name = dumped_form_data.get('name', '__noname__')
-        form_href = dumped_form_data.get('href', 'noproto://undefined')
-        form_data_list = [
-            {'href': form_href,
-             'elements': dumped_form_data.get('elements', [])}]
-        page_data = load_page_data(form_href, 'data.yml.asc')
-        page_data[form_name] = form_data_list
-        store_page_data(page_data, keys, form_href, 'data.yml.asc')
+    for href, form_data_list in get_form_data_list_page_dict().items():
+        page_data = load_page_data(href, 'data.yml.asc')
+        page_data[href] = [[form_data] for form_data in form_data_list]
+        store_page_data(page_data, keys, href, 'data.yml.asc')
 
-        page_metadata = load_page_data(form_href, 'meta.yml')
-        form_metadata = page_metadata.get(form_name, {})
-        form_metadata.setdefault('autoloadIdx', -1)
-        form_metadata['elements'] = list(set(e.get('name', None)
-                                             for f in form_data_list
-                                             for e in f.get('elements')))
-        page_metadata[form_name] = form_metadata
-        store_page_data(page_metadata, None, form_href, 'meta.yml')
+        #page_metadata = load_page_data(href, 'meta.yml')
+        #for form_data in form_data_list:
+        #    form_metadata.setdefault('autoloadIdx', -1)
+        #    form_metadata['name'] = form_data.get('name', None)
+        #    form_metadata['elements'] = form_data.get('elements', [])
+        #page_metadata[href] = form_metadata
+        #store_page_data(page_metadata, None, form_href, 'meta.yml')
 
     notify_user('Form data saved!')
 
