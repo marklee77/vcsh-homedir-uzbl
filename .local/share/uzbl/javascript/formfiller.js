@@ -35,19 +35,16 @@ uzbl.formfiller = {
             for (var j = 0; j < formList.length; j++) {
                 var form = formList[j];
                 var formData = {'elements': []}
-                try {
-                    formData.name = form.name;
-                } catch (e) { /* unnamed form not an error */ }
+                if (form.name) formData.name = form.name;
                 for(var k = 0; k < form.elements.length; k++) {
                     var element = form.elements[k];
-                    try {
-                        elementData = {name: element.name, type: element.type, 
-                                       value: element.value};
-                        if (['checkbox', 'radio'].indexOf(element.type) > -1) {
-                            elementData.checked = element.checked;
-                        }
-                        formData.elements.push(elementData)
-                    } catch (e) { /* cannot capture unnamed elements */ }
+                    if (!element.name) continue; // do not capture unnamed
+                    elementData = {name: element.name, type: element.type, 
+                                   value: element.value};
+                    if (['checkbox', 'radio'].indexOf(element.type) > -1) {
+                        elementData.checked = element.checked;
+                    }
+                    formData.elements.push(elementData)
                 }
                 formDataList.push(formData)
             }
