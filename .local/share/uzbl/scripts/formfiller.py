@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # features to add:
-#   - check for https when loading
 #   - use meta to hint that data is available
+#   - check for https when loading
 #   - autoload / autosubmit
 #   - password generation
 #   - form lookup methods: id, name, index, action, other?
@@ -196,11 +196,15 @@ def store_action(index, keys):
     return 0
 
 
+def auto_action(index):
+    return load_action(index)
+
+
 def main(argv=None):
 
     parser = ArgumentParser(description='form filler for uzbl')
     parser.add_argument('action', help='action to perform',
-                        choices=['load', 'store'])
+                        choices=['load', 'store', 'auto'])
     parser.add_argument('-i', '--index', type=int, default=-1,
                         help='data index to set or retrieve')
     parser.add_argument('-r', '--recipient', action='append',
@@ -216,6 +220,8 @@ def main(argv=None):
         if args.recipient is None or len(args.recipient) < 1:
             print "at least one recipient required to store!"
         retval = store_action(args.index, args.recipient)
+    elif args.action == 'auto':
+        retval = auto_action(args.index)
 
     return retval
 

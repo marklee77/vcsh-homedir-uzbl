@@ -1,7 +1,7 @@
 # === Core settings ==========================================================
 # FIXME: need a view source...
 # FIXME: figure out all the follow links / clipboard stuff
-# FIXME: mailto links open urxvt with mutt
+# FIXME: mailto links open urxvtcd with mutt
 # FIXME: search highlight color
 
 # common directory locations
@@ -263,7 +263,7 @@ set ebind     = @mode_bind global,-insert
 
 # Use socat to directly inject commands into uzbl-core and view events
 # raised by uzbl-core:
-@cbind  <Ctrl><Mod1>t  = sh 'urxvt -e socat unix-connect:"$UZBL_SOCKET" -'
+@cbind  <Ctrl><Mod1>t  = sh 'urxvtcd -e socat unix-connect:"$UZBL_SOCKET" -'
 
 # Uri opening prompts
 @cbind  o<uri:>_       = uri %s
@@ -345,6 +345,7 @@ set follow_hint_keys = 0123456789
 set formfiller = spawn @data_home/scripts/formfiller.py
 @cbind zd = @formfiller store -r 0xCB8FE39384C1D3F4
 @cbind zl = @formfiller load
+@on_event LOAD_FINISH spawn @formfiller auto
 
 # --- Uzbl tabbed binds ------------------------------------------------------
 
