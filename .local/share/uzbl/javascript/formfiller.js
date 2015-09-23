@@ -117,7 +117,7 @@ uzbl.formfiller = {
                             {
                                 // if element is collection, get first
                                 if (el.length) el = el[0];
-                                el.style.border = '1px solid red';
+                                el.style.color = 'red';
                             }
                         }
                     } catch (e) { /* problem with formData.elements */ }
