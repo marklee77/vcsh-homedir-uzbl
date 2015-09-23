@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # features to add:
-#   - use meta to hint that data is available
 #   - check for https when loading
 #   - autoload / autosubmit
 #   - password generation
@@ -205,15 +204,15 @@ def store_action(index, keys):
 def auto_action():
 
     hint_form_data_list_page_dict = {}
-    update_form_data_list_page_dict = {}
+    #update_form_data_list_page_dict = {}
     for href in get_href_list():
         page_metadata = load_page_data(href, 'meta.yml')
-        form_data_list_page_dict[href] = [
+        hint_form_data_list_page_dict[href] = [
             form_data_list for form_data_list in
             page_metadata]
 
     hint_forms(hint_form_data_list_page_dict)
-    update_forms(update_form_data_list_page_dict)
+    #update_forms(update_form_data_list_page_dict)
     return 0
 
 
