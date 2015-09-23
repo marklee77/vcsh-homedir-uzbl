@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # features to add:
 #   - use meta to hint that data is available
-#   - password generation
-#   - capture available values from select box
-#   - check for https when loading
 #   - autoload / autosubmit
+#   - check for https when loading
+#   - password generation
 #   - form lookup methods: id, name, index, action, other?
 import gtk
 import json
