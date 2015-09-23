@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # features to add:
+#   - use meta to hint that data is available
 #   - check for https when loading
 #   - autoload / autosubmit
 #   - password generation
 #   - form lookup methods: id, name, index, action, other?
+#   - okay, got it, each page has forms on it, each page metadata is a dictionary
+#     with autoLoadIndex and forms
 import gtk
 import json
 import os
@@ -168,8 +171,8 @@ def load_action(index):
     for href in get_href_list():
         page_data = load_page_data(href, 'data.yml.asc')
         form_data_list_page_dict[href] = [
-            form_data_list[index % len(form_data_list)]
-            for form_data_list in page_data]
+            form_data_list for form_data_list in
+            page_data[index % len(page_data)]]
 
     return update_forms(form_data_list_page_dict)
 
@@ -181,19 +184,14 @@ def store_action(index, keys):
 
     for href, form_data_list in get_form_data_list_page_dict().items():
         page_data = load_page_data(href, 'data.yml.asc')
-        if len(page_data > 0):
-            for page_form_data_list, form_data in zip(page_data,
-                                                      form_data_list):
-                page_form_data_list[index % len(page_form_data_list)] = \
-                    form_data
-        else:
-            page_data = [[form_data] for form_data in form_data_list]
+        page_data[index % len(page_data)] = form_data_list
         store_page_data(page_data, keys, href, 'data.yml.asc')
 
-        form_metadata_list = load_page_data(href, 'meta.yml')
+        page_metadata = load_page_data(href, 'meta.yml')
+        form_metadata_list = page_metadata.get('forms', [])
         if len(form_metadata_list) < 1:
             for form_data in form_data_list:
-                form_metadata = {'autoloadIdx': -1, 'autoSubmit': False}
+                form_metadata = {'autoSubmit': False}
                 form_name = form_data.get('name', None)
                 if form_name is not None:
                     form_metadata['name'] = form_name
@@ -210,15 +208,13 @@ def store_action(index, keys):
 def auto_action():
 
     hint_form_data_list_page_dict = {}
-    update_form_data_list_page_dict = {}
+    #update_form_data_list_page_dict = {}
     for href in get_href_list():
         page_metadata = load_page_data(href, 'meta.yml')
         hint_form_data_list_page_dict[href] = [
             form_data_list for form_data_list in
             page_metadata]
-        for form_metadata in page_metadata:
-            if form_metadata.get('autoloadIdx', -1) > -1:
-        
+
     hint_forms(hint_form_data_list_page_dict)
     #update_forms(update_form_data_list_page_dict)
     return 0
