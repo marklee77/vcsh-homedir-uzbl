@@ -58,50 +58,50 @@ uzbl.formfiller = {
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
-            var formDataList = 
-                formDataListPageDict[frame.location.href];
+            var formList = frame.document.getElementsByTagName('form');
             try {
-                formList = frame.document.getElementsByTagName('form');
+                var formDataList = formDataListPageDict[frame.location.href];
                 for (var j = 0; 
                      j < formList.length && j < formDataList.length; 
-                     j++) 
+                     j++)
                 {
                     var form = formList[j];
                     var formData = formDataList[j];
-                    for (var k = 0; j < formData.elements.length; k++) {
-                        var elementData = formData.elements[k];
-                        var element = form.elements[elementData.name];
-                        try {
-                            if (['checkbox', 'radio'].indexOf(elementData.type) 
-                                > -1) 
-                            {
-                                // if element is a singleton rather than a 
-                                // collection, then wrap it in an array.
-                                if (!element.length) element = [element];
-                                
-                                for (l = 0; l < element.length; l++) {
-                                    if (element[l].value == elementData.value) {
-                                        element[l].checked = 
-                                            elementData.checked;
+                    try {
+                        for (var k = 0; j < formData.elements.length; k++) {
+                            var elementData = formData.elements[k];
+                            var element = form.elements[elementData.name];
+                            try {
+                                if (['checkbox', 'radio'].indexOf(elementData.type) 
+                                    > -1) 
+                                {
+                                    // if element is a singleton rather than a 
+                                    // collection, then wrap it in an array.
+                                    if (!element.length) element = [element];
+                                    
+                                    for (l = 0; l < element.length; l++) {
+                                        if (element[l].value == elementData.value) {
+                                            element[l].checked = 
+                                                elementData.checked;
+                                        }
                                     }
+                                } else {
+                                    // this bit of ugliness is because 
+                                    // element[name] might be a collection if more 
+                                    // than one element has the same name. In this 
+                                    // case we just set the value of the first.
+                                    var element = form.elements[elementData.name];
+                                    if (element.length) {
+                                        element = element[0];
+                                    }
+                                    element.value = elementData.value;
                                 }
-                            } else {
-                                // this bit of ugliness is because 
-                                // element[name] might be a collection if more 
-                                // than one element has the same name. In this 
-                                // case we just set the value of the first.
-                                var element = form.elements[elementData.name];
-                                if (element.length) {
-                                    element = element[0];
-                                }
-                                element.value = elementData.value;
                             }
+                            catch (err) { }
                         }
-                        catch (err) { }
-                    }
+                    } catch (e) { /* problem with formData.elements */ }
                 }
-            }
-            catch (err) { }
+            } catch (e) { /* did not get proper formDataList */ }
         }
  
     },
