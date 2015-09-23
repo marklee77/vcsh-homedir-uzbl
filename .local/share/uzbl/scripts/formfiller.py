@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # features to add:
-#   - multiple data for same form (load cycles, or specify), also save multiple
 #   - use meta to hint that data is available
 #   - password generation
 #   - capture available values from select box
@@ -30,7 +29,7 @@ RECV_BUFSIZE = 1024*1024
 
 def load_data_file(*args):
     filepath = os.path.join(*args)
-    data = {}
+    data = []
 
     try:
         if filepath[-4:] in ['.asc', '.gpg']:
@@ -181,16 +180,17 @@ def store_action(index, keys):
         page_data[index % len(page_data)] = form_data_list
         store_page_data(page_data, keys, href, 'data.yml.asc')
 
-        form_metadata_list = []
-        for form_data in form_data_list:
-            form_metadata = {'autoloadIdx': -1, 'autoSubmit': False}
-            form_name = form_data.get('name', None)
-            if form_name is not None:
-                form_metadata['name'] = form_name
-            form_metadata['elements'] = [e.get('name', None) for e in
-                                         form_data.get('elements', [])]
-            form_metadata_list.append(form_metadata)
-        store_page_data(form_metadata_list, None, href, 'meta.yml')
+        form_metadata_list = load_page_data(href, 'meta.yml')
+        if len(form_metadata_list) < 1:
+            for form_data in form_data_list:
+                form_metadata = {'autoloadIdx': -1, 'autoSubmit': False}
+                form_name = form_data.get('name', None)
+                if form_name is not None:
+                    form_metadata['name'] = form_name
+                form_metadata['elements'] = [e.get('name', None) for e in
+                                             form_data.get('elements', [])]
+                form_metadata_list.append(form_metadata)
+            store_page_data(form_metadata_list, None, href, 'meta.yml')
 
     notify_user('Form data saved!')
 
