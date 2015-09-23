@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # features to add:
+#   - check for https when loading
 #   - use meta to hint that data is available
 #   - autoload / autosubmit
-#   - check for https when loading
 #   - password generation
 #   - form lookup methods: id, name, index, action, other?
 import gtk
