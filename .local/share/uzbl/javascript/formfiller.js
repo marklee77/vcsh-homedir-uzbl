@@ -5,12 +5,10 @@ uzbl.formfiller = {
         if (arguments.length > 0) {
             frame = arguments[0];
         }
-        //var frameList = new Array(frame);
         var frameList = [frame];
 
         for (var i = 0; i < frame.frames.length; i++) {
-            //frameList = frameList.concat(this.getFrameList(frame.frames[i]))
-            frameList += this.getFrameList(frame.frames[i])
+            frameList = frameList.concat(this.getFrameList(frame.frames[i]))
         }
 
         return frameList;
@@ -18,9 +16,9 @@ uzbl.formfiller = {
 
     getHrefList: function() {
         var frameList = this.getFrameList();
-        var hrefList = new Array();
+        var hrefList = [];
         for (var i = 0; i < frameList.length; i++) {
-            hrefList.push(frameList[i].location.href.split('?')[0]);
+            hrefList.push(frameList[i].location.href);
         }
         return hrefList;
     },
@@ -31,30 +29,26 @@ uzbl.formfiller = {
 
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
-            try {
-                var frameFormList = frame.document.getElementsByTagName('form');
-                var formDataList = [];
-                for (var j = 0; j < frameFormList.length; j++) {
-                    var form = frameFormList[j];
-                    var formData = {'name': form.name,
-                                    'elements': []}
-                    for(var k = 0; k < form.elements.length; k++) {
-                        var element = form.elements[k];
-                        if (element.name == '') continue;
-                        elementData = {'name': element.name,
-                                       'type': element.type,
-                                       'value': element.value};
-                        if (['checkbox', 'radio'].indexOf(element.type) > -1) {
-                            elementData['checked'] = element.checked;
-                        }
-                        formData['elements'].push(elementData)
+            var formList = frame.document.getElementsByTagName('form');
+            var formDataList = [];
+            for (var j = 0; j < formList.length; j++) {
+                var form = formList[j];
+                var formData = {'name': form.name, 'elements': []}
+                for(var k = 0; k < form.elements.length; k++) {
+                    var element = form.elements[k];
+                    if (element.name == '') continue;
+                    elementData = {'name': element.name,
+                                   'type': element.type,
+                                   'value': element.value};
+                    if (['checkbox', 'radio'].indexOf(element.type) > -1) {
+                        elementData['checked'] = element.checked;
                     }
-                    formDataList.push(formData)
+                    formData['elements'].push(elementData)
                 }
-                formDataListPageDict[frame.location.href.split('?')[0]] = 
-                    formDataList;
+                formDataList.push(formData)
             }
-            catch (err) { }
+            formDataListPageDict[frame.location.href] = 
+                formDataList;
         }
         return formDataListPageDict;
     },
@@ -65,7 +59,7 @@ uzbl.formfiller = {
         for (var i = 0; i < frameList.length; i++) {
             var frame = frameList[i];
             var formDataList = 
-                formDataListPageDict[frame.location.href.split('?')[0]];
+                formDataListPageDict[frame.location.href];
             try {
                 formList = frame.document.getElementsByTagName('form');
                 for (var j = 0; 
