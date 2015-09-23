@@ -5,10 +5,12 @@ uzbl.formfiller = {
         if (arguments.length > 0) {
             frame = arguments[0];
         }
-        var frameList = new Array(frame);
+        //var frameList = new Array(frame);
+        var frameList = [frame];
 
         for (var i = 0; i < frame.frames.length; i++) {
-            frameList = frameList.concat(this.getFrameList(frame.frames[i]))
+            //frameList = frameList.concat(this.getFrameList(frame.frames[i]))
+            frameList += this.getFrameList(frame.frames[i])
         }
 
         return frameList;
