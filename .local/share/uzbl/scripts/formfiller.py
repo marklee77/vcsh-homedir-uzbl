@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # features to add:
 #   - use meta to hint that data is available
+#   - autoload
 #   - check for https when loading
-#   - autoload / autosubmit
+#   - autosubmit
 #   - password generation
 #   - form lookup methods: id, name, index, action, other?
-#   - okay, got it, each page has forms on it, each page metadata is a dictionary
-#     with autoLoadIndex and forms
+#   - reorg and cleanup...
 import gtk
 import json
 import os
@@ -187,7 +187,8 @@ def store_action(index, keys):
         page_data[index % len(page_data)] = form_data_list
         store_page_data(page_data, keys, href, 'data.yml.asc')
 
-        page_metadata = load_page_data(href, 'meta.yml')
+        page_metadata = dict(load_page_data(href, 'meta.yml'))
+        page_metadata.setdefault('autoLoadIdx', -1)
         form_metadata_list = page_metadata.get('forms', [])
         if len(form_metadata_list) < 1:
             for form_data in form_data_list:
@@ -198,7 +199,8 @@ def store_action(index, keys):
                 form_metadata['elements'] = [e.get('name', None) for e in
                                              form_data.get('elements', [])]
                 form_metadata_list.append(form_metadata)
-            store_page_data(form_metadata_list, None, href, 'meta.yml')
+        page_metadata['forms'] = form_metadata_list
+        store_page_data(page_metadata, None, href, 'meta.yml')
 
     notify_user('Form data saved!')
 
@@ -208,15 +210,21 @@ def store_action(index, keys):
 def auto_action():
 
     hint_form_data_list_page_dict = {}
-    #update_form_data_list_page_dict = {}
+    update_form_data_list_page_dict = {}
     for href in get_href_list():
         page_metadata = load_page_data(href, 'meta.yml')
         hint_form_data_list_page_dict[href] = [
             form_data_list for form_data_list in
-            page_metadata]
+            page_metadata.get('forms', [])]
+        auto_load_idx = page_metadata.get('autoLoadIdx', -1)
+        if auto_load_idx > -1:
+            page_data = load_page_data(href, 'data.yml.asc')
+            update_form_data_list_page_dict[href] = [
+                form_data_list for form_data_list in
+                page_data[auto_load_idx % len(page_data)]]
 
     hint_forms(hint_form_data_list_page_dict)
-    #update_forms(update_form_data_list_page_dict)
+    update_forms(update_form_data_list_page_dict)
     return 0
 
 
