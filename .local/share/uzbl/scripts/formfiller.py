@@ -132,13 +132,31 @@ def get_href_list():
     return retval
 
 
+def get_index():
+    response = send_javascript('JSON.stringify(uzbl.formfiller.index)')
+    _, json_retval = response.split('\n', 1)
+    retval = yaml.load(json_retval)
+    if not isinstance(retval, list):
+        retval = []
+    return retval
+
+
+def get_and_incr_index():
+    response = send_javascript('JSON.stringify(uzbl.formfiller.index++)')
+    _, json_retval = response.split('\n', 1)
+    retval = yaml.load(json_retval)
+    if not isinstance(retval, list):
+        retval = []
+    return retval
+
+
 def update_forms(form_data_list_page_dict):
     send_javascript('uzbl.formfiller.updateForms({})'.format(
         json.dumps(form_data_list_page_dict)))
     return 0
 
 
-def load_action():
+def load_action(index):
 
     form_data_list_page_dict = {}
     for href in get_href_list():
@@ -149,11 +167,11 @@ def load_action():
     return update_forms(form_data_list_page_dict)
 
 
-def store_action(keys):
+def store_action(index, keys):
 
     for href, form_data_list in get_form_data_list_page_dict().items():
         page_data = load_page_data(href, 'data.yml.asc')
-        page_data = [[form_data] for form_data in form_data_list]
+        page_data[index % len(page_data)] = form_data_list
         store_page_data(page_data, keys, href, 'data.yml.asc')
 
         form_metadata_list = []
