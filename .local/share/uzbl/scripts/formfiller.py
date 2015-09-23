@@ -136,17 +136,17 @@ def get_index():
     response = send_javascript('JSON.stringify(uzbl.formfiller.index)')
     _, json_retval = response.split('\n', 1)
     retval = yaml.load(json_retval)
-    if not isinstance(retval, list):
-        retval = []
+    if not isinstance(retval, int):
+        retval = 0
     return retval
 
 
-def get_and_incr_index():
-    response = send_javascript('JSON.stringify(uzbl.formfiller.index++)')
+def get_incr_index():
+    response = send_javascript('JSON.stringify(++uzbl.formfiller.index)')
     _, json_retval = response.split('\n', 1)
     retval = yaml.load(json_retval)
-    if not isinstance(retval, list):
-        retval = []
+    if not isinstance(retval, int):
+        retval = 0
     return retval
 
 
@@ -158,16 +158,23 @@ def update_forms(form_data_list_page_dict):
 
 def load_action(index):
 
+    if index < 0:
+        index = get_incr_index()
+
     form_data_list_page_dict = {}
     for href in get_href_list():
+        page_data = load_page_data(href, 'data.yml.asc')
         form_data_list_page_dict[href] = [
-            form_data_list[0] for form_data_list in
-            load_page_data(href, 'data.yml.asc')]
+            form_data_list for form_data_list in
+            page_data[index % len(page_data)]]
 
     return update_forms(form_data_list_page_dict)
 
 
 def store_action(index, keys):
+
+    if index < 0:
+        index = get_index()
 
     for href, form_data_list in get_form_data_list_page_dict().items():
         page_data = load_page_data(href, 'data.yml.asc')
@@ -195,7 +202,7 @@ def main(argv=None):
     parser = ArgumentParser(description='form filler for uzbl')
     parser.add_argument('action', help='action to perform',
                         choices=['load', 'store'])
-    parser.add_argument('-i', '--index', type=int, default=-1, 
+    parser.add_argument('-i', '--index', type=int, default=-1,
                         help='data index to set or retrieve')
     parser.add_argument('-r', '--recipient', action='append',
                         help='gpg recipient, repeat for multiple, '
