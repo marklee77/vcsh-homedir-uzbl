@@ -154,6 +154,12 @@ def update_forms(form_data_list_page_dict):
     return 0
 
 
+def hint_forms(form_data_list_page_dict):
+    send_javascript('uzbl.formfiller.hintForms({})'.format(
+        json.dumps(form_data_list_page_dict)))
+    return 0
+
+
 def load_action(index):
 
     if index < 0:
@@ -196,7 +202,7 @@ def store_action(index, keys):
     return 0
 
 
-def auto_action(index):
+def auto_action():
 
     form_data_list_page_dict = {}
     for href in get_href_list():
@@ -229,7 +235,7 @@ def main(argv=None):
             print "at least one recipient required to store!"
         retval = store_action(args.index, args.recipient)
     elif args.action == 'auto':
-        retval = auto_action(args.index)
+        retval = auto_action()
 
     return retval
 

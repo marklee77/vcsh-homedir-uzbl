@@ -94,4 +94,35 @@ uzbl.formfiller = {
             } catch (e) { /* did not get proper formDataList */ }
         }
     },
+
+    hintForms: function(formDataListPageDict) {
+        var frameList = this.getFrameList();
+
+        for (var i = 0; i < frameList.length; i++) {
+            var frame = frameList[i];
+            var formList = frame.document.getElementsByTagName('form');
+            try {
+                var formDataList = formDataListPageDict[frame.location.href];
+                for (var j = 0; 
+                     j < formList.length && j < formDataList.length; 
+                     j++)
+                {
+                    var form = formList[j];
+                    var formData = formDataList[j];
+                    try {
+                        for (var k = 0; j < formData.elements.length; k++) {
+                            var elData = formData.elements[k];
+                            var el = form.elements[elData.name];
+                            if (['checkbox', 'radio'].indexOf(elData.type) < 0) 
+                            {
+                                // if element is collection, get first
+                                if (el.length) el = el[0];
+                                el.style.border = '1px solid red';
+                            }
+                        }
+                    } catch (e) { /* problem with formData.elements */ }
+                }
+            } catch (e) { /* did not get proper formDataList */ }
+        }
+    },
 }
