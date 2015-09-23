@@ -145,7 +145,7 @@ def load_action():
     for href in get_href_list():
         form_data_list_page_dict[href] = [
             form_data_list[0] for form_data_list in
-            load_page_data(href, 'data.yml.asc')[href]]
+            load_page_data(href, 'data.yml.asc')]
 
     return update_forms(form_data_list_page_dict)
 
@@ -158,15 +158,14 @@ def store_action(keys):
 
         form_metadata_list = []
         for form_data in form_data_list:
-            form_metadata = {}
-            form_metadata.setdefault('autoloadIdx', -1)
-            form_metadata['name'] = form_data.get('name', None)
+            form_metadata = {'autoloadIdx': -1, 'autoSubmit': False}
+            form_name = form_data.get('name', None)
+            if form_name is not None:
+                form_metadata['name'] = form_name
             form_metadata['elements'] = [e.get('name', None) for e in
                                          form_data.get('elements', [])]
             form_metadata_list.append(form_metadata)
-        page_metadata = load_page_data(href, 'meta.yml')
-        page_metadata[href] = form_metadata_list
-        store_page_data(page_metadata, None, href, 'meta.yml')
+        store_page_data(form_metadata_list, None, href, 'meta.yml')
 
     notify_user('Form data saved!')
 
