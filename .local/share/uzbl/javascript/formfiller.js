@@ -70,7 +70,7 @@ uzbl.formfiller = {
                     var form = formList[j];
                     var formData = formDataList[j];
                     try {
-                        for (var k = 0; j < formData.elements.length; k++) {
+                        for (var k = 0; k < formData.elements.length; k++) {
                             var elData = formData.elements[k];
                             var el = form.elements[elData.name];
                             if (['checkbox', 'radio'].indexOf(elData.type) > -1) 
@@ -103,21 +103,20 @@ uzbl.formfiller = {
             var formList = frame.document.getElementsByTagName('form');
             try {
                 var formDataList = formDataListPageDict[frame.location.href];
-                for (var j = 0; 
-                     j < formList.length && j < formDataList.length; 
+                for (var j = 0;
+                     j < formList.length && j < formDataList.length;
                      j++)
                 {
                     var form = formList[j];
                     var formData = formDataList[j];
                     try {
-                        for (var k = 0; j < formData.elements.length; k++) {
-                            var elData = formData.elements[k];
-                            var el = form.elements[elData.name];
-                            if (['checkbox', 'radio'].indexOf(elData.type) < 0) 
+                        for (var k = 0; k < formData.elements.length; k++) {
+                            var el = form.elements[formData.elements[k]];
+                            if (el.length) el = el[0];
+                            if (['checkbox', 'radio'].indexOf(el.type) < 0)
                             {
                                 // if element is collection, get first
-                                if (el.length) el = el[0];
-                                el.style.color = 'red';
+                                el.style.border = '1px solid red';
                             }
                         }
                     } catch (e) { /* problem with formData.elements */ }

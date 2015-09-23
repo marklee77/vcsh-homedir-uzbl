@@ -346,7 +346,7 @@ set formfiller = spawn @data_home/scripts/formfiller.py
 @cbind zd = @formfiller store -r 0xCB8FE39384C1D3F4
 @cbind zl = @formfiller load
 @cbind za = @formfiller auto
-#@on_event LOAD_FINISH @formfiller auto
+@on_event LOAD_FINISH @formfiller auto
 
 # --- Uzbl tabbed binds ------------------------------------------------------
 
