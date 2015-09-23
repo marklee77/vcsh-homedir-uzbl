@@ -1,5 +1,7 @@
 uzbl.formfiller = {
 
+    dataIdx: 0,
+
     getFrameList: function() {
         var frame = window;
         if (arguments.length > 0) {

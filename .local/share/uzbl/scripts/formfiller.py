@@ -152,6 +152,7 @@ def load_action():
 def store_action(keys):
 
     for href, form_data_list in get_form_data_list_page_dict().items():
+        page_data = load_page_data(href, 'data.yml.asc')
         page_data = [[form_data] for form_data in form_data_list]
         store_page_data(page_data, keys, href, 'data.yml.asc')
 
@@ -176,6 +177,8 @@ def main(argv=None):
     parser = ArgumentParser(description='form filler for uzbl')
     parser.add_argument('action', help='action to perform',
                         choices=['load', 'store'])
+    parser.add_argument('-i', '--index', type=int, default=-1, 
+                        help='data index to set or retrieve')
     parser.add_argument('-r', '--recipient', action='append',
                         help='gpg recipient, repeat for multiple, '
                              'required to store')
@@ -184,11 +187,11 @@ def main(argv=None):
 
     retval = True
     if args.action == 'load':
-        retval = load_action()
+        retval = load_action(args.index)
     elif args.action == 'store':
         if args.recipient is None or len(args.recipient) < 1:
             print "at least one recipient required to store!"
-        retval = store_action(args.recipient)
+        retval = store_action(args.index, args.recipient)
 
     return retval
 
