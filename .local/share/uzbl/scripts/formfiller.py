@@ -153,8 +153,7 @@ def load_action():
 def store_action(keys):
 
     for href, form_data_list in get_form_data_list_page_dict().items():
-        page_data = load_page_data(href, 'data.yml.asc')
-        page_data[href] = [[form_data] for form_data in form_data_list]
+        page_data = [[form_data] for form_data in form_data_list]
         store_page_data(page_data, keys, href, 'data.yml.asc')
 
         form_metadata_list = []

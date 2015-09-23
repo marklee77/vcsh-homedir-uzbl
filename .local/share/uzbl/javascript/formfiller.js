@@ -69,40 +69,27 @@ uzbl.formfiller = {
                     var formData = formDataList[j];
                     try {
                         for (var k = 0; j < formData.elements.length; k++) {
-                            var elementData = formData.elements[k];
-                            var element = form.elements[elementData.name];
-                            try {
-                                if (['checkbox', 'radio'].indexOf(elementData.type) 
-                                    > -1) 
-                                {
-                                    // if element is a singleton rather than a 
-                                    // collection, then wrap it in an array.
-                                    if (!element.length) element = [element];
-                                    
-                                    for (l = 0; l < element.length; l++) {
-                                        if (element[l].value == elementData.value) {
-                                            element[l].checked = 
-                                                elementData.checked;
-                                        }
+                            var elData = formData.elements[k];
+                            var el = form.elements[elData.name];
+                            if (['checkbox', 'radio'].indexOf(elData.type) > -1) 
+                            {
+                                // if element is a singleton rather than a 
+                                // collection, then wrap it in an array.
+                                if (!el.length) el = [el];
+                                for (l = 0; l < el.length; l++) {
+                                    if (el[l].value == elData.value) {
+                                        el[l].checked = elData.checked;
                                     }
-                                } else {
-                                    // this bit of ugliness is because 
-                                    // element[name] might be a collection if more 
-                                    // than one element has the same name. In this 
-                                    // case we just set the value of the first.
-                                    var element = form.elements[elementData.name];
-                                    if (element.length) {
-                                        element = element[0];
-                                    }
-                                    element.value = elementData.value;
                                 }
+                            } else {
+                                // if element is collection, get first
+                                if (el.length) el = el[0];
+                                el.value = elData.value;
                             }
-                            catch (err) { }
                         }
                     } catch (e) { /* problem with formData.elements */ }
                 }
             } catch (e) { /* did not get proper formDataList */ }
         }
- 
     },
 }
