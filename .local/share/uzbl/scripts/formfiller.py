@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # features to add:
-#   - go back to using position instead of form name...
-#   - multiple data for same form (load cycles, or specify)
+#   - multiple data for same form (load cycles, or specify), also save multiple
 #   - use meta to hint that data is available
 #   - password generation
 #   - capture available values from select box
 #   - check for https when loading
-#   - autoloading
-#   - future feature enhancement...tag all forms with unique id in javascript?
+#   - autoload / autosubmit
+#   - form lookup methods: id, name, index, action, other?
 import gtk
 import json
 import os
