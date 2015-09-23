@@ -168,8 +168,8 @@ def load_action(index):
     for href in get_href_list():
         page_data = load_page_data(href, 'data.yml.asc')
         form_data_list_page_dict[href] = [
-            form_data_list for form_data_list in
-            page_data[index % len(page_data)]]
+            form_data_list[index % len(form_data_list)] 
+            for form_data_list in page_data]
 
     return update_forms(form_data_list_page_dict)
 
