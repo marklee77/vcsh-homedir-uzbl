@@ -95,6 +95,7 @@ uzbl.formfiller = {
                                 el.value = elData.value;
                             }
                         }
+                        if (formData.autosubmit) form.submit();
                     } catch (e) { /* problem with formData.elements */ }
                 }
             } catch (e) { /* did not get proper formDataList */ }
