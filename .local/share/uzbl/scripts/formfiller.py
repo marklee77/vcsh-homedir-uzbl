@@ -110,13 +110,18 @@ def send_javascript(script):
     return response
 
 
-def get_form_data_list_page_dict():
-    response = send_javascript(
-        'JSON.stringify(uzbl.formfiller.getFormDataListPageDict())')
-    _, json_retval = response.split('\n', 1)
-    retval = yaml.load(json_retval)
-    if not isinstance(retval, dict):
-        retval = {}
+def eval_js(expr, default=None):
+    retval = default
+    try:
+        s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        s.connect(os.environ.get('UZBL_SOCKET', None))
+        s.sendall('js JSON.stringify({});\n'.format(expr.replace('@', '\@')))
+        _, json_retval = s.recv(RECV_BUFSIZE).split('\n', 1)
+        retval = yaml.load(json_retval)
+        s.close()
+    except:
+        pass
+
     return retval
 
 
@@ -173,7 +178,7 @@ def load_action(index):
         index = get_incr_index()
 
     form_data_list_page_dict = {}
-    for href in get_href_list():
+    for href in eval_js('uzbl.formfiller.getHrefList()', []):
         page_data = load_page_data(href, 'data.yml.asc')
         if len(page_data) > 0:
             form_data_list_page_dict[href] = [
@@ -189,7 +194,8 @@ def store_action(index, recipients=[], append=False):
     if index < 0:
         index = get_index()
 
-    for href, form_data_list in get_form_data_list_page_dict().items():
+    for href, form_data_list in eval_js(
+            'uzbl.formfiller.getFormDataListPageDict()', {}).items():
         page_data = load_page_data(href, 'data.yml.asc')
         if len(page_data) > 0 and not append:
             page_data[index % len(page_data)] = form_data_list
