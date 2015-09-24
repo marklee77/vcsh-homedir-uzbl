@@ -69,8 +69,13 @@ uzbl.formfiller = {
                 {
                     var form = formList[j];
                     var formData = formDataList[j];
-                    
                     try {
+                        if (formData.elements.length && 
+                            form.action.split(':', 1) != 'https')
+                        {
+                            if(!confirm('load private data to insecure form?')) 
+                                continue;
+                        }
                         for (var k = 0; k < formData.elements.length; k++) {
                             var elData = formData.elements[k];
                             var el = form.elements[elData.name];

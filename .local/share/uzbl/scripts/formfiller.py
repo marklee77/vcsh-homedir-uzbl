@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # features to add:
-#   - check for https when loading
 #   - autosubmit
 #   - password generation
 #   - form lookup methods: id, name, index, action, other?
