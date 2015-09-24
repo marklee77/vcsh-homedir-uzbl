@@ -96,7 +96,7 @@ uzbl.formfiller = {
                             }
                         }
                         if (formData.autosubmit) form.submit();
-                    } catch (e) { /* problem with formData.elements */ }
+                    } catch (e) { /* formData elements or autosubmit */ }
                 }
             } catch (e) { /* did not get proper formDataList */ }
         }

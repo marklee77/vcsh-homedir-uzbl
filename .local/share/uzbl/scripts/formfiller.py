@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # features to add:
-#   - autosubmit
-#   - password generation
-#   - form lookup methods: id, name, index, action, other?
 #   - reorg and cleanup...
+#   - password gen
+#   - append form data instead of overwriting
+#   - form lookup methods: id, name, index, action, other?
 #   - keyringer?
 import gtk
 import json
@@ -184,6 +184,7 @@ def load_action(index):
     return update_forms(form_data_list_page_dict)
 
 
+# append param here...
 def store_action(index, keys):
 
     if index < 0:
