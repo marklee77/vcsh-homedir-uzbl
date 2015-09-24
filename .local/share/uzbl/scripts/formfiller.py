@@ -25,6 +25,17 @@ uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'formdata')
 RECV_BUFSIZE = 1024*1024
 
 
+def notify_user(message):
+    dialog = gtk.MessageDialog(
+        None,
+        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+        gtk.MESSAGE_INFO,
+        gtk.BUTTONS_OK,
+        message)
+
+    dialog.run()
+
+
 def load_data_file(*args):
     filepath = os.path.join(*args)
     data = []
@@ -97,17 +108,6 @@ def send_javascript(script):
         pass
 
     return response
-
-
-def notify_user(message):
-    dialog = gtk.MessageDialog(
-        None,
-        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-        gtk.MESSAGE_INFO,
-        gtk.BUTTONS_OK,
-        message)
-
-    dialog.run()
 
 
 def get_form_data_list_page_dict():
