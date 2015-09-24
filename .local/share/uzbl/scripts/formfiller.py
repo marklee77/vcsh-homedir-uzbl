@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # features to add:
-#   - use meta to hint that data is available
-#   - autoload
 #   - check for https when loading
 #   - autosubmit
 #   - password generation
@@ -151,12 +149,20 @@ def get_incr_index():
 
 
 def update_forms(form_data_list_page_dict):
+
+    if len(form_data_list_page_dict) < 1:
+        return 0
+
     send_javascript('uzbl.formfiller.updateForms({})'.format(
         json.dumps(form_data_list_page_dict)))
     return 0
 
 
 def hint_forms(form_data_list_page_dict):
+
+    if len(form_data_list_page_dict) < 1:
+        return 0
+
     send_javascript('uzbl.formfiller.hintForms({})'.format(
         json.dumps(form_data_list_page_dict)))
     return 0
@@ -170,9 +176,10 @@ def load_action(index):
     form_data_list_page_dict = {}
     for href in get_href_list():
         page_data = load_page_data(href, 'data.yml.asc')
-        form_data_list_page_dict[href] = [
-            form_data_list for form_data_list in
-            page_data[index % len(page_data)]]
+        if len(page_data) > 0:
+            form_data_list_page_dict[href] = [
+                form_data_list for form_data_list in
+                page_data[index % len(page_data)]]
 
     return update_forms(form_data_list_page_dict)
 
@@ -213,15 +220,17 @@ def auto_action():
     update_form_data_list_page_dict = {}
     for href in get_href_list():
         page_metadata = load_page_data(href, 'meta.yml')
-        hint_form_data_list_page_dict[href] = [
-            form_data_list for form_data_list in
-            page_metadata.get('forms', [])]
+        if len(page_metadata) > 0:
+            hint_form_data_list_page_dict[href] = [
+                form_data_list for form_data_list in
+                page_metadata.get('forms', [])]
         auto_load_idx = page_metadata.get('autoLoadIdx', -1)
         if auto_load_idx > -1:
             page_data = load_page_data(href, 'data.yml.asc')
-            update_form_data_list_page_dict[href] = [
-                form_data_list for form_data_list in
-                page_data[auto_load_idx % len(page_data)]]
+            if len(page_data) > 0:
+                update_form_data_list_page_dict[href] = [
+                    form_data_list for form_data_list in
+                    page_data[auto_load_idx % len(page_data)]]
 
     hint_forms(hint_form_data_list_page_dict)
     update_forms(update_form_data_list_page_dict)
