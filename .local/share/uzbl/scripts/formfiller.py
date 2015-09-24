@@ -96,20 +96,6 @@ def store_page_data(data, recipients, href, *args):
     return store_data_file(data, recipients, gen_data_dir(href), *args)
 
 
-def send_javascript(script):
-    response = ''
-    try:
-        s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        s.connect(os.environ.get('UZBL_SOCKET', None))
-        s.sendall('js {};\n'.format(script.replace('@', '\@')))
-        response = s.recv(RECV_BUFSIZE)
-        s.close()
-    except:
-        pass
-
-    return response
-
-
 def eval_js(expr, default=None):
     retval = default
     try:
@@ -125,26 +111,6 @@ def eval_js(expr, default=None):
     return retval
 
 
-def update_forms(form_data_list_page_dict):
-
-    if len(form_data_list_page_dict) < 1:
-        return 0
-
-    send_javascript('uzbl.formfiller.updateForms({})'.format(
-        json.dumps(form_data_list_page_dict)))
-    return 0
-
-
-def hint_forms(form_data_list_page_dict):
-
-    if len(form_data_list_page_dict) < 1:
-        return 0
-
-    send_javascript('uzbl.formfiller.hintForms({})'.format(
-        json.dumps(form_data_list_page_dict)))
-    return 0
-
-
 def load_action(index=-1):
 
     if index < 0:
@@ -158,8 +124,9 @@ def load_action(index=-1):
                 form_data_list for form_data_list in
                 page_data[index % len(page_data)]]
 
-    eval_js('uzbl.formfiller.updateForms({})'.format(
-        json.dumps(form_data_list_page_dict)))
+    if form_data_list_page_dict:
+        eval_js('uzbl.formfiller.updateForms({})'.format(
+            json.dumps(form_data_list_page_dict)))
 
     return 0
 
@@ -168,7 +135,6 @@ def store_action(index=-1, recipients=[], append=False):
 
     if index < 0:
         index = eval_js('uzbl.formfiller.index', -1)
-        notify_user('index: {:d}'.format(index))
 
     for href, form_data_list in eval_js(
             'uzbl.formfiller.getFormDataListPageDict()', {}).items():
@@ -210,18 +176,21 @@ def auto_action():
                 form_data_list for form_data_list in
                 page_metadata.get('forms', [])]
         if page_metadata.get('autoload', False):
-            eval_js('uzbl.formfiller.index++')
+            eval_js('uzbl.formfiller.index = 0')
             page_data = load_page_data(href, 'data.yml.asc')
             if len(page_data) > 0:
                 update_form_data_list_page_dict[href] = [
                     form_data_list for form_data_list in
                     page_data[0]]
 
-    hint_forms(hint_form_data_list_page_dict)
-    send_javascript('uzbl.formfiller.hintForms({})'.format(
-        json.dumps(form_data_list_page_dict)))
-    send_javascript('uzbl.formfiller.hintForms({})'.format(
-        json.dumps(form_data_list_page_dict)))
+    if hint_form_data_list_page_dict:
+        eval_js('uzbl.formfiller.hintForms({})'.format(
+            json.dumps(hint_form_data_list_page_dict)))
+
+    if update_form_data_list_page_dict:
+        eval_js('uzbl.formfiller.updateForms({})'.format(
+            json.dumps(update_form_data_list_page_dict)))
+
     return 0
 
 
