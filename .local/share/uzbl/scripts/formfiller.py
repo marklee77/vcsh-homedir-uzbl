@@ -100,6 +100,20 @@ def send_javascript(script):
     return response
 
 
+def call_javascript_function(funcname, *args):
+    response = ''
+    try:
+        s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        s.connect(os.environ.get('UZBL_SOCKET', None))
+        s.sendall('js {};\n'.format(script.replace('@', '\@')))
+        response = s.recv(RECV_BUFSIZE)
+        s.close()
+    except:
+        pass
+
+    return response
+
+
 def notify_user(message):
     dialog = gtk.MessageDialog(
         None,
