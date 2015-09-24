@@ -41,7 +41,7 @@ def load_data_file(*args):
     return data
 
 
-def store_data_file(data, keys, *args):
+def store_data_file(data, recipients, *args):
 
     if not data:
         return True
@@ -58,8 +58,8 @@ def store_data_file(data, keys, *args):
 
     success = False
     try:
-        if keys is not None and len(keys) > 0:
-            dataout = str(gpg.encrypt(dataout, keys))
+        if recipients is not None and len(recipients) > 0:
+            dataout = str(gpg.encrypt(dataout, recipients))
         f = open(file_path, 'w')
         f.write(dataout)
         f.close()
@@ -83,8 +83,8 @@ def load_page_data(href, *args):
     return load_data_file(gen_data_dir(href), *args)
 
 
-def store_page_data(data, keys, href, *args):
-    return store_data_file(data, keys, gen_data_dir(href), *args)
+def store_page_data(data, recipients, href, *args):
+    return store_data_file(data, recipients, gen_data_dir(href), *args)
 
 
 def send_javascript(script):
@@ -186,18 +186,18 @@ def load_action(index):
 
 
 # append param here...
-def store_action(index, keys):
+def store_action(index, recipients=[], append=False):
 
     if index < 0:
         index = get_index()
 
     for href, form_data_list in get_form_data_list_page_dict().items():
         page_data = load_page_data(href, 'data.yml.asc')
-        if len(page_data) > 0:
+        if len(page_data) > 0 and not append:
             page_data[index % len(page_data)] = form_data_list
         else:
-            page_data = [form_data_list]
-        store_page_data(page_data, keys, href, 'data.yml.asc')
+            page_data.append(form_data_list)
+        store_page_data(page_data, recipients, href, 'data.yml.asc')
 
         page_metadata = dict(load_page_data(href, 'meta.yml'))
         form_metadata_list = page_metadata.get('forms', [])
@@ -245,7 +245,7 @@ def main(argv=None):
 
     parser = ArgumentParser(description='form filler for uzbl')
     parser.add_argument('action', help='action to perform',
-                        choices=['load', 'store', 'auto'])
+                        choices=['load', 'store', 'append', 'auto'])
     parser.add_argument('-i', '--index', type=int, default=-1,
                         help='data index to set or retrieve')
     parser.add_argument('-r', '--recipient', action='append',
@@ -257,10 +257,10 @@ def main(argv=None):
     retval = True
     if args.action == 'load':
         retval = load_action(args.index)
-    elif args.action == 'store':
+    elif args.action in ['store', 'append']:
         if args.recipient is None or len(args.recipient) < 1:
             print "at least one recipient required to store!"
-        retval = store_action(args.index, args.recipient)
+        retval = store_action(args.index, args.recipient, args.action == 'append')
     elif args.action == 'auto':
         retval = auto_action()
 
