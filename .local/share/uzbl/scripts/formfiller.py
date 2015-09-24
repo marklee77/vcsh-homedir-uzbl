@@ -2,7 +2,6 @@
 # features to add:
 #   - reorg and cleanup...
 #   - password gen
-#   - append form data instead of overwriting
 #   - form lookup methods: id, name, index, action, other?
 #   - keyringer?
 import gtk
