@@ -219,6 +219,8 @@ def store_action(index, keys):
 
 def auto_action():
 
+    send_javascript('uzbl.formfiller.checkForms()')
+
     hint_form_data_list_page_dict = {}
     update_form_data_list_page_dict = {}
     for href in get_href_list():
