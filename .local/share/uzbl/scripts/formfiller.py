@@ -158,13 +158,17 @@ def load_action(index=-1):
                 form_data_list for form_data_list in
                 page_data[index % len(page_data)]]
 
-    return update_forms(form_data_list_page_dict)
+    eval_js('uzbl.formfiller.updateForms({})'.format(
+        json.dumps(form_data_list_page_dict)))
+
+    return 0
 
 
 def store_action(index=-1, recipients=[], append=False):
 
     if index < 0:
         index = eval_js('uzbl.formfiller.index', -1)
+        notify_user('index: {:d}'.format(index))
 
     for href, form_data_list in eval_js(
             'uzbl.formfiller.getFormDataListPageDict()', {}).items():
@@ -173,6 +177,7 @@ def store_action(index=-1, recipients=[], append=False):
             page_data[index % len(page_data)] = form_data_list
         else:
             page_data.append(form_data_list)
+            eval_js('uzbl.formfiller.index = {:d}'.format(len(page_data) - 1))
         store_page_data(page_data, recipients, href, 'data.yml.asc')
 
         page_metadata = dict(load_page_data(href, 'meta.yml'))
@@ -213,7 +218,10 @@ def auto_action():
                     page_data[0]]
 
     hint_forms(hint_form_data_list_page_dict)
-    update_forms(update_form_data_list_page_dict)
+    send_javascript('uzbl.formfiller.hintForms({})'.format(
+        json.dumps(form_data_list_page_dict)))
+    send_javascript('uzbl.formfiller.hintForms({})'.format(
+        json.dumps(form_data_list_page_dict)))
     return 0
 
 
