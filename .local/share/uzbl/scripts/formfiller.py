@@ -125,24 +125,6 @@ def eval_js(expr, default=None):
     return retval
 
 
-def get_href_list():
-    response = send_javascript('JSON.stringify(uzbl.formfiller.getHrefList())')
-    _, json_retval = response.split('\n', 1)
-    retval = yaml.load(json_retval)
-    if not isinstance(retval, list):
-        retval = []
-    return retval
-
-
-def get_index():
-    response = send_javascript('JSON.stringify(uzbl.formfiller.index)')
-    _, json_retval = response.split('\n', 1)
-    retval = yaml.load(json_retval)
-    if not isinstance(retval, int):
-        retval = 0
-    return retval
-
-
 def get_incr_index():
     response = send_javascript('JSON.stringify(uzbl.formfiller.index++)')
     _, json_retval = response.split('\n', 1)
@@ -188,11 +170,10 @@ def load_action(index):
     return update_forms(form_data_list_page_dict)
 
 
-# append param here...
-def store_action(index, recipients=[], append=False):
+def store_action(index=-1, recipients=[], append=False):
 
     if index < 0:
-        index = get_index()
+        index = eval_js('uzbl.formfiller.index', 0)
 
     for href, form_data_list in eval_js(
             'uzbl.formfiller.getFormDataListPageDict()', {}).items():
@@ -226,7 +207,7 @@ def auto_action():
 
     hint_form_data_list_page_dict = {}
     update_form_data_list_page_dict = {}
-    for href in get_href_list():
+    for href in eval_js('uzbl.formfiller.getHrefList()', []):
         page_metadata = load_page_data(href, 'meta.yml')
         if len(page_metadata) > 0:
             hint_form_data_list_page_dict[href] = [
