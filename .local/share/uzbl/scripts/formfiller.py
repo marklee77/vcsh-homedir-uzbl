@@ -5,6 +5,7 @@
 #   - password generation
 #   - form lookup methods: id, name, index, action, other?
 #   - reorg and cleanup...
+#   - keyringer?
 import gtk
 import json
 import os
