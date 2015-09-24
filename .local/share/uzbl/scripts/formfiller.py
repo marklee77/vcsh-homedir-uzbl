@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # features to add:
+#   - append action
 #   - reorg and cleanup...
 #   - password gen
 #   - append form data instead of overwriting
@@ -87,20 +88,6 @@ def store_page_data(data, keys, href, *args):
 
 
 def send_javascript(script):
-    response = ''
-    try:
-        s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        s.connect(os.environ.get('UZBL_SOCKET', None))
-        s.sendall('js {};\n'.format(script.replace('@', '\@')))
-        response = s.recv(RECV_BUFSIZE)
-        s.close()
-    except:
-        pass
-
-    return response
-
-
-def call_javascript_function(funcname, *args):
     response = ''
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
