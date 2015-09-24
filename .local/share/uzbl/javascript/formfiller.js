@@ -25,17 +25,6 @@ uzbl.formfiller = {
         return hrefList;
     },
 
-    checkForms: function() {
-        var frameList = this.getFrameList();
-        for (var i = 0; i < frameList.length; i++) {
-            var formList = frame.document.getElementsByTagName('form');
-            for (var j = 0; j < formList.length; j++) {
-                var form = formList[j];
-                alert(form.action);
-            }
-        }
-    },
-
     getFormDataListPageDict: function() {
         var frameList = this.getFrameList();
         var formDataListPageDict = {};
@@ -80,6 +69,7 @@ uzbl.formfiller = {
                 {
                     var form = formList[j];
                     var formData = formDataList[j];
+                    
                     try {
                         for (var k = 0; k < formData.elements.length; k++) {
                             var elData = formData.elements[k];
