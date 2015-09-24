@@ -198,15 +198,17 @@ def store_action(index, keys):
 
     for href, form_data_list in get_form_data_list_page_dict().items():
         page_data = load_page_data(href, 'data.yml.asc')
-        page_data[index % len(page_data)] = form_data_list
+        if len(page_data) > 0:
+            page_data[index % len(page_data)] = form_data_list
+        else:
+            page_data = [form_data_list]
         store_page_data(page_data, keys, href, 'data.yml.asc')
 
         page_metadata = dict(load_page_data(href, 'meta.yml'))
-        page_metadata.setdefault('autoLoadIdx', -1)
         form_metadata_list = page_metadata.get('forms', [])
         if len(form_metadata_list) < 1:
             for form_data in form_data_list:
-                form_metadata = {'autoSubmit': False}
+                form_metadata = {}
                 form_name = form_data.get('name', None)
                 if form_name is not None:
                     form_metadata['name'] = form_name
@@ -231,14 +233,13 @@ def auto_action():
             hint_form_data_list_page_dict[href] = [
                 form_data_list for form_data_list in
                 page_metadata.get('forms', [])]
-        auto_load_idx = page_metadata.get('autoLoadIdx', -1)
-        if auto_load_idx > -1:
-            set_index(auto_load_idx)
+        if page_metadata.get('autoload', False):
+            set_index(0)
             page_data = load_page_data(href, 'data.yml.asc')
             if len(page_data) > 0:
                 update_form_data_list_page_dict[href] = [
                     form_data_list for form_data_list in
-                    page_data[auto_load_idx % len(page_data)]]
+                    page_data[0]]
 
     hint_forms(hint_form_data_list_page_dict)
     update_forms(update_form_data_list_page_dict)
