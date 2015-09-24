@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # features to add:
-#   - reorg and cleanup...
 #   - password gen
 #   - form lookup methods: id, name, index, action, other?
 #   - keyringer?
