@@ -140,14 +140,8 @@ def get_index():
     return retval
 
 
-def set_index(index):
-    response = send_javascript('uzbl.formfiller.index = {:d};'.format(index))
-    _, json_retval = response.split('\n', 1)
-    return 0
-
-
 def get_incr_index():
-    response = send_javascript('JSON.stringify(++uzbl.formfiller.index)')
+    response = send_javascript('JSON.stringify(uzbl.formfiller.index++)')
     _, json_retval = response.split('\n', 1)
     retval = yaml.load(json_retval)
     if not isinstance(retval, int):
@@ -234,7 +228,7 @@ def auto_action():
                 form_data_list for form_data_list in
                 page_metadata.get('forms', [])]
         if page_metadata.get('autoload', False):
-            set_index(0)
+            get_incr_index()
             page_data = load_page_data(href, 'data.yml.asc')
             if len(page_data) > 0:
                 update_form_data_list_page_dict[href] = [
