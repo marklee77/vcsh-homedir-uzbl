@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # features to add:
-#   - append action
 #   - reorg and cleanup...
 #   - password gen
 #   - append form data instead of overwriting
@@ -260,7 +259,8 @@ def main(argv=None):
     elif args.action in ['store', 'append']:
         if args.recipient is None or len(args.recipient) < 1:
             print "at least one recipient required to store!"
-        retval = store_action(args.index, args.recipient, args.action == 'append')
+        retval = store_action(args.index, args.recipient,
+                              args.action == 'append')
     elif args.action == 'auto':
         retval = auto_action()
 
