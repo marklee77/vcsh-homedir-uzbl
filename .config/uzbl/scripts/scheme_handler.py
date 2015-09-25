@@ -6,6 +6,8 @@ import urlparse
 
 from argparse import ArgumentParser
 
+handlers = {}
+
 
 def detach_open(cmd):
     # Thanks to the vast knowledge of Laurence Withers (lwithers) and this
@@ -17,7 +19,6 @@ def detach_open(cmd):
             os.dup2(null, i)
         os.close(null)
         subprocess.Popen(cmd)
-    print 'USED'
 
 
 def mailto_mutt_handler(url_result):
@@ -25,11 +26,9 @@ def mailto_mutt_handler(url_result):
         options based on the passed url """
 
     terminal_app = os.getenv('TERMINAL', 'xterm')
-    detach_open([terminal_app, '-e', 'mutt', url_result.path])
+    detach_open([terminal_app, '-e', 'mutt', url_result.geturl()])
 
-
-def unknown_handler(url_result):
-    pass
+handlers['mailto'] = mailto_mutt_handler
 
 
 def main(argv=None):
@@ -40,9 +39,12 @@ def main(argv=None):
     args = parser.parse_args()
 
     url_result = urlparse.urlparse(args.url)
-    handlers = {'mailto': mailto_mutt_handler}
 
-    handlers.get(url_result.scheme, unknown_handler)(url_result)
+    handler_func = handlers.get(url_result.scheme, None)
+
+    if handler_func:
+        handler_func(url_result)
+        print 'USED'
 
     return 0
 
