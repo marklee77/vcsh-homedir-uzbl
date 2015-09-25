@@ -9,14 +9,13 @@ from argparse import ArgumentParser
 handlers = {}
 
 
-def detach_open(cmd):
+def detach_open(*args):
+    # for to background and close stdin, stdout, stderr
     if not os.fork():
-        #null = os.open(os.devnull, os.O_WRONLY)
-        #for i in range(3):
-        #    os.dup2(null, i)
-        #os.close(null)
-        print "test"
-        #subprocess.Popen(cmd)
+        for i in range(3):
+            os.close(i)
+        subprocess.Popen(args)
+        sys.exit(0)
 
 
 def mailto_mutt_handler(url_result):
@@ -24,7 +23,7 @@ def mailto_mutt_handler(url_result):
         options based on the passed url """
 
     terminal_app = os.getenv('TERMINAL', 'xterm')
-    detach_open([terminal_app, '-e', 'mutt', url_result.geturl()])
+    detach_open(terminal_app, '-e', 'mutt', url_result.geturl())
 
 handlers['mailto'] = mailto_mutt_handler
 
