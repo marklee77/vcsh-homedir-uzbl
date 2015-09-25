@@ -19,7 +19,7 @@ from urlparse import urlparse
 from xdg.BaseDirectory import xdg_data_home
 
 gpg = GPG()
-uzbl_forms_dir = os.path.join(xdg_data_home, 'uzbl', 'formdata')
+uzbl_site_data_dir = os.path.join(xdg_data_home, 'uzbl', 'site-data')
 
 # if someone with more experience working with python sockets knows a better
 # way to do this, email me some code or put in a github pull request.
@@ -68,7 +68,7 @@ def store_data_file(data, recipients, *args):
 
     success = False
     try:
-        if recipients is not None and len(recipients) > 0:
+        if recipients:
             dataout = str(gpg.encrypt(dataout, recipients))
         f = open(file_path, 'w')
         f.write(dataout)
@@ -86,7 +86,7 @@ def gen_data_dir(href):
     hostname = re.sub('^www[^.]*\.', '', parse_result.hostname).lower()
     path = re.sub('index\.[^.]+$', '', parse_result.path).lower()
 
-    return os.path.join(uzbl_forms_dir, hostname, *path.split('/'))
+    return os.path.join(uzbl_site_data_dir, hostname, 'forms', *path.split('/'))
 
 
 def load_page_data(href, *args):
