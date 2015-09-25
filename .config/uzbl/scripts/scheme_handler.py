@@ -4,6 +4,7 @@ import subprocess
 import sys
 import urlparse
 
+from argparse import ArgumentParser
 
 def detach_open(cmd):
     # Thanks to the vast knowledge of Laurence Withers (lwithers) and this
@@ -17,16 +18,21 @@ def detach_open(cmd):
         subprocess.Popen(cmd)
     print 'USED'
 
-if __name__ == '__main__':
-    uri = sys.argv[1]
-    u = urlparse.urlparse(uri)
+
+def main(argv=None):
+
+    parser = ArgumentParser(description='scheme handler for uzbl')
+    parser.add_argument('uri', help='uri to operate on')
+
+    args = parser.parse_args()
+
+    u = urlparse.urlparse(args.uri)
 
     if u.scheme == 'mailto':
         # get subject from query string...
         detach_open(['urxvtcd', '-e', 'mutt', u.path])
-    #elif u.scheme == 'xmpp':
-    #    # Someone check for safe arguments to gajim-remote
-    #    detach_open(['gajim-remote', 'open_chat', uri])
-    #elif u.scheme == 'git':
-    #    detach_open(['git', 'clone', '--', uri],
-    #                cwd=os.path.expanduser('~/src'))
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))
