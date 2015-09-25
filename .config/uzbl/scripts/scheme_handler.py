@@ -10,16 +10,13 @@ handlers = {}
 
 
 def detach_open(cmd):
-    # Thanks to the vast knowledge of Laurence Withers (lwithers) and this
-    # message:
-    # http://mail.python.org/pipermail/python-list/2006-November/587523.html
-    subprocess.Popen(cmd)
-    #if not os.fork():
-    #    null = os.open(os.devnull, os.O_WRONLY)
-    #    for i in range(3):
-    #        os.dup2(null, i)
-    #    os.close(null)
-    #    subprocess.Popen(cmd)
+    if not os.fork():
+        #null = os.open(os.devnull, os.O_WRONLY)
+        #for i in range(3):
+        #    os.dup2(null, i)
+        #os.close(null)
+        print "test"
+        #subprocess.Popen(cmd)
 
 
 def mailto_mutt_handler(url_result):
