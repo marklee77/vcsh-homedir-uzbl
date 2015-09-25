@@ -54,7 +54,6 @@ set download_handler       = sync_spawn @scripts_dir/download.sh
 @on_event   LOAD_START     @set_mode
 @on_event   LOAD_COMMIT    @set_status <span foreground="green">recv</span>
 @on_event   LOAD_COMMIT    js uzbl = {};
-@on_event   LOAD_COMMIT    script @config_home/javascript/formfiller.js
 @on_event   LOAD_COMMIT    script @scripts_dir/follow.js
 #@on_event   LOAD_COMMIT    spawn @scripts_dir/per-site-settings.py @config_home/per-site-settings
 @on_event   LOAD_FINISH    @set_status <span foreground="gold">done</span>
@@ -345,6 +344,7 @@ set formfiller = spawn @config_home/scripts/formfiller.py
 @cbind zd = @formfiller store -r 0xCB8FE39384C1D3F4
 @cbind za = @formfiller append -r 0xCB8FE39384C1D3F4
 @cbind zl = @formfiller load
+@on_event LOAD_COMMIT script @config_home/javascript/formfiller.js
 @on_event LOAD_FINISH @formfiller auto
 
 # --- Uzbl tabbed binds ------------------------------------------------------
