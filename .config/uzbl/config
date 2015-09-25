@@ -4,6 +4,7 @@
 # FIXME: mailto links open urxvtcd with mutt
 # FIXME: search highlight color
 # FIXME: look at cookies, consider manager / blacklist
+# FIXME: cookies to cache instead of data, session cookies to runtime?
 
 # common directory locations
 set prefix      = @(echo $PREFIX)@
@@ -44,7 +45,7 @@ set set_status      = set status_message =
 # support events that can wait for a response from a script.
 set scheme_handler         = sync_spawn @scripts_dir/scheme_handler.py
 #set request_handler        = sync_spawn @scripts_dir/request.py
-set authentication_handler = sync_spawn @scripts_dir/auth.py
+set authentication_handler = sync_spawn @scripts_dir/auth_handler.py
 set download_handler       = sync_spawn @scripts_dir/download.sh
 
 # === Dynamic event handlers =================================================
