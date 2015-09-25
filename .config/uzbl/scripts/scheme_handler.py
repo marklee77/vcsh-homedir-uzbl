@@ -20,7 +20,7 @@ def detach_open(cmd):
     print 'USED'
 
 
-def mailto_handler(url
+def mailto_handler(urlparser_result
 
 
 def main(argv=None):
