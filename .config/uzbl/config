@@ -3,6 +3,7 @@
 # FIXME: figure out all the follow links / clipboard stuff
 # FIXME: mailto links open urxvtcd with mutt
 # FIXME: search highlight color
+# FIXME: look at cookies, consider manager / blacklist
 
 # common directory locations
 set prefix      = @(echo $PREFIX)@
@@ -104,9 +105,7 @@ set progress.pending    =
 
 # === Useragent setup ========================================================
 
-# FIXME: per-site user agents?
-set useragent         = Uzbl (Webkit @{WEBKIT_MAJOR}.@{WEBKIT_MINOR}) (@(+uname -sm)@ [@ARCH_UZBL])
-#set useragent         = Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0
+set useragent = Uzbl (Webkit @{WEBKIT_MAJOR}.@{WEBKIT_MINOR}) (@(+uname -sm)@ [@ARCH_UZBL])
 
 # === Configure cookie blacklist ========================================================
 
