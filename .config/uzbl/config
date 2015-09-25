@@ -6,14 +6,15 @@
 
 # common directory locations
 set prefix      = @(echo $PREFIX)@
-set data_home   = @(echo $XDG_DATA_HOME/uzbl)@
-set cache_home  = @(echo $XDG_CACHE_HOME/uzbl)@
 set config_home = @(echo $XDG_CONFIG_HOME/uzbl)@
+set data_home   = @(mkdir -p $XDG_DATA_HOME/uzbl && echo $XDG_DATA_HOME/uzbl)@
+set cache_home  = @(mkdir -p $XDG_CACHE_HOME/uzbl && echo $XDG_CACHE_HOME/uzbl)@
+set runtime_dir = @(mkdir -p $XDG_RUNTIME_DIR/uzbl && echo $XDG_RUNTIME_DIR/uzbl)@
+set scripts_dir = @config_home:@prefix/share/uzbl/examples/data:scripts
 
 # Interface paths.
-set comm_dir    = @([ -n "$XDG_RUNTIME_DIR" ] && mkdir -p $XDG_RUNTIME_DIR/uzbl && echo "$XDG_RUNTIME_DIR/uzbl" || echo "/tmp/uzbl-$USER")@
-set fifo_dir    = @comm_dir
-set socket_dir  = @comm_dir
+set fifo_dir    = @runtime_dir
+set socket_dir  = @runtime_dir
 
 set shell_cmd   = sh -c
 
@@ -35,8 +36,6 @@ set toggle_modes    = request TOGGLE_MODES
 
 set set_mode        = set mode =
 set set_status      = set status_message =
-
-set scripts_dir     = @config_home:@prefix/share/uzbl/examples/data:scripts
 
 # === Hardcoded handlers =====================================================
 
