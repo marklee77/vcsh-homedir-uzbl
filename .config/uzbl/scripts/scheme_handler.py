@@ -20,6 +20,9 @@ def detach_open(cmd):
     print 'USED'
 
 
+def mailto_handler(url
+
+
 def main(argv=None):
 
     parser = ArgumentParser(description='scheme handler for uzbl')
