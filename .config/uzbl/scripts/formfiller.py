@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # features to add:
 #   - password gen
+#   - license, description, docstrings
 #   - form lookup methods: id, name, index, action, other?
 #   - keyringer?
 import gtk

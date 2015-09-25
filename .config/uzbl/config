@@ -36,7 +36,7 @@ set toggle_modes    = request TOGGLE_MODES
 set set_mode        = set mode =
 set set_status      = set status_message =
 
-set scripts_dir     = @data_home:@prefix/share/uzbl/examples/data:scripts
+set scripts_dir     = @config_home:@prefix/share/uzbl/examples/data:scripts
 
 # === Hardcoded handlers =====================================================
 
@@ -55,9 +55,9 @@ set download_handler       = sync_spawn @scripts_dir/download.sh
 @on_event   LOAD_START     @set_mode
 @on_event   LOAD_COMMIT    @set_status <span foreground="green">recv</span>
 @on_event   LOAD_COMMIT    js uzbl = {};
-@on_event   LOAD_COMMIT    script @data_home/javascript/formfiller.js
+@on_event   LOAD_COMMIT    script @config_home/javascript/formfiller.js
 @on_event   LOAD_COMMIT    script @scripts_dir/follow.js
-#@on_event   LOAD_COMMIT    spawn @scripts_dir/per-site-settings.py @data_home/per-site-settings
+#@on_event   LOAD_COMMIT    spawn @scripts_dir/per-site-settings.py @config_home/per-site-settings
 @on_event   LOAD_FINISH    @set_status <span foreground="gold">done</span>
 @on_event   LOAD_FINISH    spawn @scripts_dir/history.sh
 @on_event   FOCUS_ELEMENT  sh 'if [ "$1" = INPUT -o "$1" = TEXTAREA -o "$1" = SELECT ]; then echo "@set_mode insert" > $UZBL_FIFO; fi' %s
@@ -342,7 +342,7 @@ set follow_hint_keys = 0123456789
 @cbind  '*  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followTextContent("%s", 'click') >\@
 
 # form filler
-set formfiller = spawn @data_home/scripts/formfiller.py
+set formfiller = spawn @config_home/scripts/formfiller.py
 @cbind zd = @formfiller store -r 0xCB8FE39384C1D3F4
 @cbind za = @formfiller append -r 0xCB8FE39384C1D3F4
 @cbind zl = @formfiller load

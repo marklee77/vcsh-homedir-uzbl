@@ -5,13 +5,8 @@
 !.config/mr/config.d/uzbl
 !.config/uzbl
 !.config/uzbl/*
+!.config/uzbl/javascript/*
+!.config/uzbl/scripts/*
 !.gitignore.d
 !.gitignore.d/uzbl
-!.local
-!.local/share
-!.local/share/uzbl
-!.local/share/uzbl/javascript
-!.local/share/uzbl/javascript/*
-!.local/share/uzbl/scripts
-!.local/share/uzbl/scripts/*
 .*.swp
