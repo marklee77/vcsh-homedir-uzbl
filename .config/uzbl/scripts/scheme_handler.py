@@ -20,7 +20,9 @@ def detach_open(cmd):
 if __name__ == '__main__':
     uri = sys.argv[1]
     u = urlparse.urlparse(uri)
+
     if u.scheme == 'mailto':
+        # get subject from query string...
         detach_open(['urxvtcd', '-e', 'mutt', u.path])
     #elif u.scheme == 'xmpp':
     #    # Someone check for safe arguments to gajim-remote
