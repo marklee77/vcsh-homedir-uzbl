@@ -3,6 +3,7 @@
 #   - password gen
 #   - license, description, docstrings
 #   - form lookup methods: id, name, index, action, other?
+#   - move hint style to css?
 #   - keyringer?
 import gtk
 import json
@@ -171,14 +172,14 @@ def auto_action():
     update_form_data_list_page_dict = {}
     for href in eval_js('uzbl.formfiller.getHrefList()', []):
         page_metadata = load_page_data(href, 'meta.yml')
-        if len(page_metadata) > 0:
+        if page_metadata:
             hint_form_data_list_page_dict[href] = [
                 form_data_list for form_data_list in
                 page_metadata.get('forms', [])]
         if page_metadata.get('autoload', False):
             eval_js('uzbl.formfiller.index = 0')
             page_data = load_page_data(href, 'data.yml.asc')
-            if len(page_data) > 0:
+            if page_data:
                 update_form_data_list_page_dict[href] = [
                     form_data_list for form_data_list in
                     page_data[0]]
