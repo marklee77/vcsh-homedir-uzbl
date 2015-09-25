@@ -102,9 +102,9 @@ def eval_js(expr, default=None):
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(os.environ.get('UZBL_SOCKET', None))
         s.sendall('js JSON.stringify({});\n'.format(expr.replace('@', '\@')))
-        _, json_retval = s.recv(RECV_BUFSIZE).split('\n', 1)
-        retval = yaml.load(json_retval)
+        response = s.recv(RECV_BUFSIZE)
         s.close()
+        retval = yaml.load(response.split('\n', 1)[1])
     except:
         pass
 
@@ -119,7 +119,7 @@ def load_action(index=-1):
     form_data_list_page_dict = {}
     for href in eval_js('uzbl.formfiller.getHrefList()', []):
         page_data = load_page_data(href, 'data.yml.asc')
-        if len(page_data) > 0:
+        if page_data:
             form_data_list_page_dict[href] = [
                 form_data_list for form_data_list in
                 page_data[index % len(page_data)]]
@@ -139,7 +139,7 @@ def store_action(index=-1, recipients=[], append=False):
     for href, form_data_list in eval_js(
             'uzbl.formfiller.getFormDataListPageDict()', {}).items():
         page_data = load_page_data(href, 'data.yml.asc')
-        if len(page_data) > 0 and index > -1 and not append:
+        if page_data and index > -1 and not append:
             page_data[index % len(page_data)] = form_data_list
         else:
             page_data.append(form_data_list)
@@ -148,7 +148,7 @@ def store_action(index=-1, recipients=[], append=False):
 
         page_metadata = dict(load_page_data(href, 'meta.yml'))
         form_metadata_list = page_metadata.get('forms', [])
-        if len(form_metadata_list) < 1:
+        if not form_metadata_list:
             for form_data in form_data_list:
                 form_metadata = {}
                 form_name = form_data.get('name', None)
