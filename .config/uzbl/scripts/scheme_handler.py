@@ -20,21 +20,29 @@ def detach_open(cmd):
     print 'USED'
 
 
-def mailto_handler(urlparser_result
+def mailto_mutt_handler(url_result):
+    """ This function does mutt-specific generates mutt-specific command-line
+        options based on the passed url """
+
+    terminal_app = os.getenv('TERMINAL', 'xterm')
+    detach_open([terminal_app, '-e', 'mutt', url_result.path])
+
+
+def unknown_handler(url_result):
+    pass
 
 
 def main(argv=None):
 
     parser = ArgumentParser(description='scheme handler for uzbl')
-    parser.add_argument('uri', help='uri to operate on')
+    parser.add_argument('url', help='url to operate upon')
 
     args = parser.parse_args()
 
-    u = urlparse.urlparse(args.uri)
+    url_result = urlparse.urlparse(args.url)
+    handlers = {'mailto': mailto_mutt_handler}
 
-    if u.scheme == 'mailto':
-        # get subject from query string...
-        detach_open(['urxvtcd', '-e', 'mutt', u.path])
+    handlers.get(url_result.scheme, unknown_handler)(url_result)
 
     return 0
 
