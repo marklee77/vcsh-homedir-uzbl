@@ -6,6 +6,7 @@ import urlparse
 
 from argparse import ArgumentParser
 
+
 def detach_open(cmd):
     # Thanks to the vast knowledge of Laurence Withers (lwithers) and this
     # message:
