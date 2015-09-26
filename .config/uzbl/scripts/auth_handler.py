@@ -53,15 +53,15 @@ def getText(authInfo, authHost, authRealm):
 def main(argv=None):
 
     parser = ArgumentParser(description='auth handler for uzbl')
-    parser.add_argument('auth_zone', help='authentication zone')
+    parser.add_argument('authzone', help='authentication zone')
     parser.add_argument('hostname', help='host or domain name')
-    parser.add_argument('realm', help='authentication realm')
+    parser.add_argument('authrealm', help='authentication realm')
     parser.add_argument('repeat', type=bool, help='repeat request')
 
     args = parser.parse_args()
 
     # FIXME: check for repeats...
-    rv, output = getText(args.auth_zone, args.hostname, args.realm)
+    rv, output = getText(args.authzone, args.hostname, args.authrealm)
     if (rv == gtk.RESPONSE_OK):
         print output
     else:
