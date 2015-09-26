@@ -5,11 +5,9 @@ import os
 import sys
 
 from argparse import ArgumentParser
-from xdg.BaseDirectory import xdg_data_home, get_runtime_dir
+from xdg.BaseDirectory import xdg_data_home
 
 uzbl_site_data_dir = os.path.join(xdg_data_home, 'uzbl', 'site_data')
-handler_runtime_dir = os.path.join(get_runtime_dir(False), 'uzbl',
-                                   'auth_handler')
 
 
 def responseToDialog(entry, dialog, response):
@@ -66,9 +64,6 @@ def main(argv=None):
 
     args = parser.parse_args()
 
-
-
-    # FIXME: check for repeats...
     rv, output = getText(args.authzone, args.hostname, args.authrealm)
     if (rv == gtk.RESPONSE_OK):
         print output
