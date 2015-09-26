@@ -3,6 +3,8 @@
 import gtk
 import sys
 
+from argparse import ArgumentParser
+
 def responseToDialog(entry, dialog, response):
     dialog.response(response)
 

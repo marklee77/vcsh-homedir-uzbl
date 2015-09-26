@@ -45,8 +45,7 @@ set set_status      = set status_message =
 # support events that can wait for a response from a script.
 set scheme_handler         = sync_spawn @scripts_dir/scheme_handler.py
 #set request_handler        = sync_spawn @scripts_dir/request.py
-#set authentication_handler = sync_spawn @scripts_dir/auth_handler.py
-set authentication_handler = sync_spawn @scripts_dir/auth_handler.sh
+set authentication_handler = sync_spawn @scripts_dir/auth_handler.py
 set download_handler       = sync_spawn @scripts_dir/download.sh
 
 # === Dynamic event handlers =================================================
