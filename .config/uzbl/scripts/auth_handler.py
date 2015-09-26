@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-# FIXME; how to handle cancel?
+# FIXME: pass default key through uzbl?
 
 import gtk
 import os
+import re
 import sys
 import yaml
 
@@ -10,13 +11,14 @@ from argparse import ArgumentParser
 from gnupg import GPG
 from xdg.BaseDirectory import xdg_data_home
 
+default_recipients = ['0xCB8FE39384C1D3F4']
 gpg = GPG()
 uzbl_site_data_dir = os.path.join(xdg_data_home, 'uzbl', 'site_data')
 
 
 def load_data_file(*args):
     filepath = os.path.join(*args)
-    data = []
+    data = {}
 
     try:
         if filepath[-4:] in ['.asc', '.gpg']:
@@ -57,27 +59,24 @@ def store_data_file(data, recipients, *args):
     return success
 
 
-def gen_data_dir(hostname):
-
-    hostname = re.sub('^www[^.]*\.', '', parse_result.hostname).lower()
-    path = re.sub('index\.[^.]+$', '', parse_result.path).lower()
-
-    return os.path.join(uzbl_site_data_dir, hostname, 'forms', *path.split('/'))
+def gen_data_file(hostname):
+    hostname = re.sub('^www[^.]*\.', '', hostname).lower()
+    return os.path.join(uzbl_site_data_dir, hostname, 'auth.yml.asc')
 
 
-def load_page_data(href, *args):
-    return load_data_file(gen_data_dir(href), *args)
+def load_auth_data(hostname, *args):
+    return load_data_file(gen_data_file(hostname))
 
 
-def store_page_data(data, recipients, href, *args):
-    return store_data_file(data, recipients, gen_data_dir(href), *args)
+def store_auth_data(data, hostname):
+    return store_data_file(data, default_recipients, gen_data_file(hostname))
 
 
 def responseToDialog(entry, dialog, response):
     dialog.response(response)
 
 
-def login_popup(zone, host, realm):
+def login_popup(zone, hostname, realm):
 
     dialog = gtk.MessageDialog(
         None,
@@ -85,7 +84,7 @@ def login_popup(zone, host, realm):
         gtk.MESSAGE_QUESTION,
         gtk.BUTTONS_OK_CANCEL,
         None)
-    dialog.set_markup('{:s} at {:s}'.format(realm, host))
+    dialog.set_markup('{:s} at {:s}'.format(realm, hostname))
 
     login = gtk.Entry()
     password = gtk.Entry()
@@ -124,7 +123,7 @@ def main(argv=None):
 
     parser = ArgumentParser(description='auth handler for uzbl')
     parser.add_argument('zone', help='authentication zone')
-    parser.add_argument('host', help='host or domain name')
+    parser.add_argument('hostname', help='host or domain name')
     parser.add_argument('realm', help='authentication realm')
     parser.add_argument('repeat', help='repeat request')
 
@@ -133,7 +132,7 @@ def main(argv=None):
     if args.repeat.lower() == 'true':
         return 1
 
-    response, data = login_popup(args.zone, args.host, args.realm)
+    response, data = login_popup(args.zone, args.hostname, args.realm)
     if (response != gtk.RESPONSE_OK):
         return 1
 
