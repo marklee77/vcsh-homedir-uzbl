@@ -5,8 +5,10 @@ import sys
 
 from argparse import ArgumentParser
 
+
 def responseToDialog(entry, dialog, response):
     dialog.response(response)
+
 
 def getText(authInfo, authHost, authRealm):
     dialog = gtk.MessageDialog(
@@ -24,10 +26,10 @@ def getText(authInfo, authHost, authRealm):
     login.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
     password.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
 
-    hbox = gtk.HBox();
+    hbox = gtk.HBox()
 
-    vbox_entries = gtk.VBox();
-    vbox_labels = gtk.VBox();
+    vbox_entries = gtk.VBox()
+    vbox_labels = gtk.VBox()
 
     vbox_labels.pack_start(gtk.Label("Login:"), False, 5, 5)
     vbox_labels.pack_end(gtk.Label("Password:"), False, 5, 5)
@@ -47,16 +49,21 @@ def getText(authInfo, authHost, authRealm):
     dialog.destroy()
     return rv, output
 
+
 def main(argv=None):
 
     parser = ArgumentParser(description='auth handler for uzbl')
-    #parser.add_argument('url', help='url to operate upon')
+    parser.add_argument('auth_zone', help='authentication zone')
+    parser.add_argument('hostname', help='host or domain name')
+    parser.add_argument('realm', help='authentication realm')
+    parser.add_argument('repeat', type=bool, help='repeat request')
 
     args = parser.parse_args()
 
-    rv, output = getText(sys.argv[1], sys.argv[2], sys.argv[3])
+    # FIXME: check for repeats...
+    rv, output = getText(args.auth_zone, args.hostname, args.realm)
     if (rv == gtk.RESPONSE_OK):
-        print output;
+        print output
     else:
         exit(1)
 
