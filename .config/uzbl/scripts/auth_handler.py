@@ -4,25 +4,88 @@
 import gtk
 import os
 import sys
+import yaml
 
 from argparse import ArgumentParser
+from gnupg import GPG
 from xdg.BaseDirectory import xdg_data_home
 
+gpg = GPG()
 uzbl_site_data_dir = os.path.join(xdg_data_home, 'uzbl', 'site_data')
+
+
+def load_data_file(*args):
+    filepath = os.path.join(*args)
+    data = []
+
+    try:
+        if filepath[-4:] in ['.asc', '.gpg']:
+            data = yaml.load(str(gpg.decrypt_file(open(filepath, 'r'))))
+        else:
+            data = yaml.load(open(filepath, 'r'))
+    except IOError:
+        pass
+    return data
+
+
+def store_data_file(data, recipients, *args):
+
+    if not data:
+        return True
+
+    file_path = os.path.join(*args)
+    file_dir = os.path.dirname(file_path)
+
+    try:
+        os.makedirs(file_dir, 0700)
+    except OSError:
+        os.chmod(file_dir, 0700)
+
+    dataout = yaml.dump(data, default_flow_style=False, explicit_start=True)
+
+    success = False
+    try:
+        if recipients:
+            dataout = str(gpg.encrypt(dataout, recipients))
+        f = open(file_path, 'w')
+        f.write(dataout)
+        f.close()
+        success = True
+    except:
+        pass
+
+    return success
+
+
+def gen_data_dir(hostname):
+
+    hostname = re.sub('^www[^.]*\.', '', parse_result.hostname).lower()
+    path = re.sub('index\.[^.]+$', '', parse_result.path).lower()
+
+    return os.path.join(uzbl_site_data_dir, hostname, 'forms', *path.split('/'))
+
+
+def load_page_data(href, *args):
+    return load_data_file(gen_data_dir(href), *args)
+
+
+def store_page_data(data, recipients, href, *args):
+    return store_data_file(data, recipients, gen_data_dir(href), *args)
 
 
 def responseToDialog(entry, dialog, response):
     dialog.response(response)
 
 
-def login_popup(authInfo, authHost, authRealm):
+def login_popup(zone, host, realm):
+
     dialog = gtk.MessageDialog(
         None,
         gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
         gtk.MESSAGE_QUESTION,
         gtk.BUTTONS_OK_CANCEL,
         None)
-    dialog.set_markup('%s at %s' % (authRealm, authHost))
+    dialog.set_markup('{:s} at {:s}'.format(realm, host))
 
     login = gtk.Entry()
     password = gtk.Entry()
@@ -48,11 +111,13 @@ def login_popup(authInfo, authHost, authRealm):
 
     dialog.vbox.pack_start(hbox)
     dialog.show_all()
-    rv = dialog.run()
+    response = dialog.run()
 
-    output = login.get_text() + "\n" + password.get_text()
+    data = {'username': login.get_text(), 'password': password.get_text()}
+
     dialog.destroy()
-    return rv, output
+
+    return response, data
 
 
 def main(argv=None):
@@ -61,11 +126,11 @@ def main(argv=None):
     parser.add_argument('zone', help='authentication zone')
     parser.add_argument('host', help='host or domain name')
     parser.add_argument('realm', help='authentication realm')
-    parser.add_argument('repeat', type=bool, help='repeat request')
+    parser.add_argument('repeat', help='repeat request')
 
     args = parser.parse_args()
 
-    if args.repeat:
+    if args.repeat.lower() == 'true':
         return 1
 
     response, data = login_popup(args.zone, args.host, args.realm)
