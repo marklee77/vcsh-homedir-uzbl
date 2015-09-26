@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# FIXME; how to handle cancel?
 
 import gtk
 import os
@@ -14,7 +15,7 @@ def responseToDialog(entry, dialog, response):
     dialog.response(response)
 
 
-def getText(authInfo, authHost, authRealm):
+def login_popup(authInfo, authHost, authRealm):
     dialog = gtk.MessageDialog(
         None,
         gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -57,18 +58,22 @@ def getText(authInfo, authHost, authRealm):
 def main(argv=None):
 
     parser = ArgumentParser(description='auth handler for uzbl')
-    parser.add_argument('authzone', help='authentication zone')
-    parser.add_argument('hostname', help='host or domain name')
-    parser.add_argument('authrealm', help='authentication realm')
+    parser.add_argument('zone', help='authentication zone')
+    parser.add_argument('host', help='host or domain name')
+    parser.add_argument('realm', help='authentication realm')
     parser.add_argument('repeat', type=bool, help='repeat request')
 
     args = parser.parse_args()
 
-    rv, output = getText(args.authzone, args.hostname, args.authrealm)
-    if (rv == gtk.RESPONSE_OK):
-        print output
-    else:
-        exit(1)
+    if args.repeat:
+        return 1
+
+    response, data = login_popup(args.zone, args.host, args.realm)
+    if (response != gtk.RESPONSE_OK):
+        return 1
+
+    print data.get('username', '')
+    print data.get('password', '')
 
     return 0
 
