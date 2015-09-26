@@ -13,7 +13,7 @@ from xdg.BaseDirectory import xdg_data_home
 
 default_recipients = ['0xCB8FE39384C1D3F4']
 gpg = GPG()
-uzbl_site_data_dir = os.path.join(xdg_data_home, 'uzbl', 'site_data')
+uzbl_site_data_dir = os.path.join(xdg_data_home, 'uzbl', 'site-data')
 
 
 def load_data_file(*args):
@@ -64,7 +64,7 @@ def gen_data_file(hostname):
     return os.path.join(uzbl_site_data_dir, hostname, 'auth.yml.asc')
 
 
-def load_auth_data(hostname, *args):
+def load_auth_data(hostname):
     return load_data_file(gen_data_file(hostname))
 
 
@@ -112,11 +112,14 @@ def login_popup(zone, hostname, realm):
     dialog.show_all()
     response = dialog.run()
 
-    data = {'username': login.get_text(), 'password': password.get_text()}
+    login_info = {'username': login.get_text(),
+                  'password': password.get_text()}
 
+    site_data.setdefault(realm, []).append(login_info)
+    store_auth_data(site_data, hostname)
     dialog.destroy()
 
-    return response, data
+    return response, login_info
 
 
 def main(argv=None):
@@ -132,12 +135,12 @@ def main(argv=None):
     if args.repeat.lower() == 'true':
         return 1
 
-    response, data = login_popup(args.zone, args.hostname, args.realm)
+    response, login_info = login_popup(args.zone, args.hostname, args.realm)
     if (response != gtk.RESPONSE_OK):
         return 1
 
-    print data.get('username', '')
-    print data.get('password', '')
+    print login_info.get('username', '')
+    print login_info.get('password', '')
 
     return 0
 
