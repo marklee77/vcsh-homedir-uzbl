@@ -48,23 +48,17 @@ def getText(authInfo, authHost, authRealm):
 def main(argv=None):
 
     parser = ArgumentParser(description='auth handler for uzbl')
-    parser.add_argument('url', help='url to operate upon')
+    #parser.add_argument('url', help='url to operate upon')
 
     args = parser.parse_args()
 
-    url_result = urlparse.urlparse(args.url)
-
-    handler_func = handlers.get(url_result.scheme, None)
-
-    if handler_func:
-        handler_func(url_result)
-        print 'USED'
-
-    return 0
-
-if __name__ == '__main__':
     rv, output = getText(sys.argv[1], sys.argv[2], sys.argv[3])
     if (rv == gtk.RESPONSE_OK):
         print output;
     else:
         exit(1)
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))
