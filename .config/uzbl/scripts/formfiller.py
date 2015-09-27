@@ -10,6 +10,7 @@ import json
 import os
 import re
 import socket
+import subprocess
 import sys
 import yaml
 
@@ -86,7 +87,8 @@ def gen_data_dir(href):
     hostname = re.sub('^www[^.]*\.', '', parse_result.hostname).lower()
     path = re.sub('index\.[^.]+$', '', parse_result.path).lower()
 
-    return os.path.join(uzbl_site_data_dir, hostname, 'forms', *path.split('/'))
+    return os.path.join(uzbl_site_data_dir, hostname, 'forms',
+                        *path.split('/'))
 
 
 def load_page_data(href, *args):
@@ -177,9 +179,13 @@ def detach_open(*args):
 
 def edit_action():
     terminal = os.getenv('TERMINAL', 'xterm')
-    editor = os.getenv('EDITOR', 'vi)
+    editor = os.getenv('EDITOR', 'vi')
 
-    detach_open(terminal, '-e', editor, 
+    for href in eval_js('uzbl.formfiller.getHrefList()', []):
+        detach_open(terminal, '-e', editor,
+                    os.path.join(gen_data_dir(href), 'data.yml.asc'))
+
+    return 0
 
 
 def auto_action():

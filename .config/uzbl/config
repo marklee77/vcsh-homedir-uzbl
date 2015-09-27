@@ -276,12 +276,6 @@ set ebind     = @mode_bind global,-insert
 # New window binds
 @cbind  gw  = event REQ_NEW_WINDOW
 
-# SSL-ify bindings
-# FIXME: don't know if these are useful, but make it obvious if page is not
-# secure
-@cbind  zs  = uri \@(echo "$UZBL_URI" | sed -e 's/^http:/https:/')\@
-@cbind  zS  = event REQ_NEW_WINDOW \@(echo "$UZBL_URI" | sed -e 's/^http:/https:/')\@
-
 # Yanking & pasting binds
 # FIXME: I want to use -sel clipboard, but not sure how that works w/ @
 # clipboard...
@@ -339,13 +333,13 @@ set follow_hint_keys = 0123456789
 @cbind  '*  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followTextContent("%s", 'click') >\@
 
 # form filler
+@on_event LOAD_COMMIT script @config_home/javascript/formfiller.js
 set formfiller = spawn @config_home/scripts/formfiller.py
-@cbind zd = @formfiller store -r 0xCB8FE39384C1D3F4
+@on_event LOAD_FINISH @formfiller auto
+@cbind zl = @formfiller load
+@cbind zs = @formfiller store -r 0xCB8FE39384C1D3F4
 @cbind za = @formfiller append -r 0xCB8FE39384C1D3F4
 @cbind ze = @formfiller edit
-@cbind zl = @formfiller load
-@on_event LOAD_COMMIT script @config_home/javascript/formfiller.js
-@on_event LOAD_FINISH @formfiller auto
 
 # view source
 @cbind vs = sh 'urxvtcd -e vim "$UZBL_URI"'
