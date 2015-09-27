@@ -342,6 +342,7 @@ set follow_hint_keys = 0123456789
 set formfiller = spawn @config_home/scripts/formfiller.py
 @cbind zd = @formfiller store -r 0xCB8FE39384C1D3F4
 @cbind za = @formfiller append -r 0xCB8FE39384C1D3F4
+@cbind ze = @formfiller edit
 @cbind zl = @formfiller load
 @on_event LOAD_COMMIT script @config_home/javascript/formfiller.js
 @on_event LOAD_FINISH @formfiller auto

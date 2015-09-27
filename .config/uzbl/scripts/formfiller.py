@@ -166,6 +166,22 @@ def store_action(index=-1, recipients=[], append=False):
     return 0
 
 
+def detach_open(*args):
+    # for to background and close stdin, stdout, stderr
+    if not os.fork():
+        for i in range(3):
+            os.close(i)
+        subprocess.Popen(args)
+        sys.exit(0)
+
+
+def edit_action():
+    terminal = os.getenv('TERMINAL', 'xterm')
+    editor = os.getenv('EDITOR', 'vi)
+
+    detach_open(terminal, '-e', editor, 
+
+
 def auto_action():
 
     hint_form_data_list_page_dict = {}
@@ -199,7 +215,7 @@ def main(argv=None):
 
     parser = ArgumentParser(description='form filler for uzbl')
     parser.add_argument('action', help='action to perform',
-                        choices=['load', 'store', 'append', 'auto'])
+                        choices=['load', 'store', 'append', 'edit', 'auto'])
     parser.add_argument('-i', '--index', type=int, default=-1,
                         help='data index to set or retrieve')
     parser.add_argument('-r', '--recipient', action='append',
@@ -216,6 +232,8 @@ def main(argv=None):
             print "at least one recipient required to store!"
         retval = store_action(args.index, args.recipient,
                               args.action == 'append')
+    elif args.action == 'edit':
+        retval = edit_action()
     elif args.action == 'auto':
         retval = auto_action()
 
