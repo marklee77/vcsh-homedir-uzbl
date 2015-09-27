@@ -78,6 +78,14 @@ def responseToDialog(entry, dialog, response):
 
 def login_popup(zone, hostname, realm):
 
+    site_data = load_auth_data(hostname)
+    realm_data = site_data.setdefault(realm, [])
+    default_username = ''
+    default_password = ''
+    if realm_data:
+        default_username = realm_data[0].get('username', '')
+        default_password = realm_data[0].get('password', '')
+
     dialog = gtk.MessageDialog(
         None,
         gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -89,6 +97,9 @@ def login_popup(zone, hostname, realm):
     login = gtk.Entry()
     password = gtk.Entry()
     password.set_visibility(False)
+
+    login.set_text(default_username)
+    password.set_text(default_password)
 
     login.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
     password.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
@@ -104,7 +115,7 @@ def login_popup(zone, hostname, realm):
     vbox_entries.pack_start(login)
     vbox_entries.pack_end(password)
 
-    dialog.format_secondary_markup("Please enter username and password:")
+    dialog.format_secondary_markup("Please enter login and password:")
     hbox.pack_start(vbox_labels, True, True, 0)
     hbox.pack_end(vbox_entries, True, True, 0)
 
@@ -115,7 +126,7 @@ def login_popup(zone, hostname, realm):
     login_info = {'username': login.get_text(),
                   'password': password.get_text()}
 
-    site_data.setdefault(realm, []).append(login_info)
+    realm_data.append(login_info)
     store_auth_data(site_data, hostname)
     dialog.destroy()
 
