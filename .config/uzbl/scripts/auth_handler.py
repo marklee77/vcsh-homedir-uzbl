@@ -73,8 +73,8 @@ def store_auth_data(data, hostname):
     return store_data_file(data, default_recipients, gen_data_file(hostname))
 
 
-def responseToDialog(entry, dialog, response):
-    dialog.response(response)
+def responseToDialog(entry, dialog):
+    dialog.response(gtk.RESPONSE_OK)
 
 
 def login_popup(hostname, realm):
@@ -116,8 +116,8 @@ def login_popup(hostname, realm):
     dialog.set_markup('{:s} at {:s}'.format(realm, hostname))
     dialog.format_secondary_markup("Please enter login and password:")
 
-    login.child.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
-    password.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
+    login.child.connect("activate", responseToDialog, dialog)
+    password.connect("activate", responseToDialog, dialog)
 
     dialog.vbox.pack_start(hbox)
     dialog.show_all()
@@ -126,6 +126,7 @@ def login_popup(hostname, realm):
     login_info = {'username': login.child.get_text(),
                   'password': password.get_text()}
 
+    print login_info
     print login.get_active()
 
     dialog.destroy()
