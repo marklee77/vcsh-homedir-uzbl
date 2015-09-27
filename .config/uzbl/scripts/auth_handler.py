@@ -87,11 +87,11 @@ def login_popup(hostname, realm):
     #    default_username = realm_data[0].get('username', '')
     #    default_password = realm_data[0].get('password', '')
 
-    login = gtk.Entry()
-    #login.set_text(default_username)
+    login = gtk.ComboBoxEntry()
+    login.set_popdown_strings(["user1", "user2", "user3"])
+
     password = gtk.Entry()
     password.set_visibility(False)
-    #password.set_text(default_password)
 
     vbox_entries = gtk.VBox()
     vbox_entries.pack_start(login)
@@ -105,11 +105,6 @@ def login_popup(hostname, realm):
     hbox.pack_start(vbox_labels, True, True, 0)
     hbox.pack_end(vbox_entries, True, True, 0)
 
-    listitem = gtk.ListItem("New Entry")
-    combo = gtk.Combo()
-    combo.list.append_items([listitem])
-    listitem.show()
-
     dialog = gtk.MessageDialog(
         None,
         gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -119,15 +114,14 @@ def login_popup(hostname, realm):
     dialog.set_markup('{:s} at {:s}'.format(realm, hostname))
     dialog.format_secondary_markup("Please enter login and password:")
 
-    login.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
+    login.entry.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
     password.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
 
     dialog.vbox.pack_start(hbox)
-    dialog.vbox.pack_end(combo)
     dialog.show_all()
     response = dialog.run()
 
-    login_info = {'username': login.get_text(),
+    login_info = {'username': login.entry.get_text(),
                   'password': password.get_text()}
 
     dialog.destroy()
