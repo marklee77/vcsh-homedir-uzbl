@@ -77,32 +77,25 @@ def responseToDialog(entry, dialog):
     dialog.response(gtk.RESPONSE_OK)
 
 
-def updatePassword(login, password, accounts):
-    index = login.get_active()
-    if -1 < index < len(accounts):
-        password.set_text(accounts[index].get('password', ''))
+def updatePassword(login_entry, password_entry, logins):
+    index = login_entry.get_active()
+    if -1 < index < len(logins):
+        password_entry.set_text(logins[index].get('password', ''))
 
 
-def login_popup(hostname, realm):
+def login_popup(hostname, realm, logins):
 
-    accounts = [
-        {'username': 'user1', 'password': 'password1'},
-        {'username': 'user2', 'password': 'password2'},
-        {'username': 'user3', 'password': 'password3'},
-        {'username': 'user4', 'password': 'password4'},
-    ]
+    login_entry = gtk.combo_box_entry_new_text()
+    for login in logins:
+        if 'username' in login:
+            login_entry.append_text(login['username'])
 
-    login = gtk.combo_box_entry_new_text()
-    for account in accounts:
-        if 'username' in account:
-            login.append_text(account['username'])
-
-    password = gtk.Entry()
-    password.set_visibility(False)
+    password_entry = gtk.Entry()
+    password_entry.set_visibility(False)
 
     vbox_entries = gtk.VBox()
-    vbox_entries.pack_start(login)
-    vbox_entries.pack_end(password)
+    vbox_entries.pack_start(login_entry)
+    vbox_entries.pack_end(password_entry)
 
     vbox_labels = gtk.VBox()
     vbox_labels.pack_start(gtk.Label("Login:"), False, 5, 5)
@@ -121,29 +114,20 @@ def login_popup(hostname, realm):
     dialog.set_markup('{:s} at {:s}'.format(realm, hostname))
     dialog.format_secondary_markup("Please enter login and password:")
 
-    login.child.connect("activate", responseToDialog, dialog)
-    login.connect("changed", updatePassword, password, accounts)
-    password.connect("activate", responseToDialog, dialog)
+    login_entry.connect("changed", updatePassword, password_entry, logins)
+    login_entry.child.connect("activate", responseToDialog, dialog)
+    password_entry.connect("activate", responseToDialog, dialog)
 
     dialog.vbox.pack_start(hbox)
     dialog.show_all()
+
     response = dialog.run()
-
-    login_info = {'username': login.child.get_text(),
-                  'password': password.get_text()}
-
-    print login_info
-    print login.get_active()
+    username = login_entry.child.get_text()
+    password = password_entry.get_text()
 
     dialog.destroy()
 
-    #if realm_data:
-    #    realm_data[0] = login_info
-    #else:
-    #    realm_data.append(login_info)
-    #store_auth_data(site_data, hostname)
-
-    return response, login_info
+    return response, username, password
 
 
 def main(argv=None):
@@ -159,15 +143,26 @@ def main(argv=None):
     if args.repeat.lower() == 'true':
         return 1
 
-    site_logins = load_auth_data(hostname)
-    realm_logins = site_logins.get(realm, [])
+    site_logins = load_auth_data(args.hostname)
+    realm_logins = site_logins.get(args.realm, [])
 
-    response, login_info = login_popup(args.hostname, args.realm, realm_logins)
+    response, username, password = login_popup(args.hostname, args.realm,
+                                               realm_logins)
     if (response != gtk.RESPONSE_OK):
         return 1
 
-    print login_info.get('username', '')
-    print login_info.get('password', '')
+    login = {'username': username, 'password': password}
+    found = False
+    changed = False
+    for realm_login in realm_logins:
+    #if realm_data:
+    #    realm_data[0] = login_info
+    #else:
+    #    realm_data.append(login_info)
+    #store_auth_data(site_data, hostname)
+
+    print username
+    print password
 
     return 0
 
