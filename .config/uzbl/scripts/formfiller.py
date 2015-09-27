@@ -171,7 +171,7 @@ def auto_action():
     hint_form_data_list_page_dict = {}
     update_form_data_list_page_dict = {}
     for href in eval_js('uzbl.formfiller.getHrefList()', []):
-        page_metadata = load_page_data(href, 'meta.yml')
+        page_metadata = dict(load_page_data(href, 'meta.yml'))
         if page_metadata:
             hint_form_data_list_page_dict[href] = [
                 form_data_list for form_data_list in

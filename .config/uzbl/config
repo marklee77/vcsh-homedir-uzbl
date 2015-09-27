@@ -1,7 +1,6 @@
 # === Core settings ==========================================================
-# FIXME: need a view source...pull up vim as scheme handler...
+# FIXME: command to dump source of current page to vim, or follow links in vim
 # FIXME: figure out all the follow links / clipboard stuff
-# FIXME: mailto links open urxvtcd with mutt
 # FIXME: search highlight color
 # FIXME: look at cookies, consider manager / blacklist
 # FIXME: cookies to cache instead of data, session cookies to runtime?
