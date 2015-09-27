@@ -77,6 +77,10 @@ def responseToDialog(entry, dialog):
     dialog.response(gtk.RESPONSE_OK)
 
 
+def updatePassword(login, password, accounts):
+    index = login.get_active()
+    if -1 < index < len(accounts):
+    
 def login_popup(hostname, realm):
 
     #site_data = load_auth_data(hostname)
@@ -87,10 +91,17 @@ def login_popup(hostname, realm):
     #    default_username = realm_data[0].get('username', '')
     #    default_password = realm_data[0].get('password', '')
 
+    accounts = [
+        {'username': 'user1', 'password': 'password1'},
+        {'username': 'user2', 'password': 'password2'},
+        {'username': 'user3', 'password': 'password3'},
+        {'username': 'user4', 'password': 'password4'},
+    ]
+
     login = gtk.combo_box_entry_new_text()
-    login.append_text("user1")
-    login.append_text("user2")
-    login.append_text("user3")
+    for account in accounts:
+        if 'username' in account:
+            login.append_text(account['username'])
 
     password = gtk.Entry()
     password.set_visibility(False)
@@ -117,6 +128,7 @@ def login_popup(hostname, realm):
     dialog.format_secondary_markup("Please enter login and password:")
 
     login.child.connect("activate", responseToDialog, dialog)
+    login.connect("changed", updatePassword, password, accounts)
     password.connect("activate", responseToDialog, dialog)
 
     dialog.vbox.pack_start(hbox)
