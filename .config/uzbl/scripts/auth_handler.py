@@ -80,16 +80,10 @@ def responseToDialog(entry, dialog):
 def updatePassword(login, password, accounts):
     index = login.get_active()
     if -1 < index < len(accounts):
-    
-def login_popup(hostname, realm):
+        password.set_text(accounts[index].get('password', ''))
 
-    #site_data = load_auth_data(hostname)
-    #realm_data = site_data.setdefault(realm, [])
-    #default_username = ''
-    #default_password = ''
-    #if realm_data:
-    #    default_username = realm_data[0].get('username', '')
-    #    default_password = realm_data[0].get('password', '')
+
+def login_popup(hostname, realm):
 
     accounts = [
         {'username': 'user1', 'password': 'password1'},
@@ -165,7 +159,10 @@ def main(argv=None):
     if args.repeat.lower() == 'true':
         return 1
 
-    response, login_info = login_popup(args.hostname, args.realm)
+    site_logins = load_auth_data(hostname)
+    realm_logins = site_logins.get(realm, [])
+
+    response, login_info = login_popup(args.hostname, args.realm, realm_logins)
     if (response != gtk.RESPONSE_OK):
         return 1
 
