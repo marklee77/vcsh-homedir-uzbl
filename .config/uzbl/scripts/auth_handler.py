@@ -77,7 +77,7 @@ def responseToDialog(entry, dialog, response):
     dialog.response(response)
 
 
-def login_popup(zone, hostname, realm):
+def login_popup(hostname, realm):
 
     site_data = load_auth_data(hostname)
     realm_data = site_data.setdefault(realm, [])
@@ -94,29 +94,26 @@ def login_popup(zone, hostname, realm):
         gtk.BUTTONS_OK_CANCEL,
         None)
     dialog.set_markup('{:s} at {:s}'.format(realm, hostname))
+    dialog.format_secondary_markup("Please enter login and password:")
 
     login = gtk.Entry()
+    login.set_text(default_username)
+    login.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
+
     password = gtk.Entry()
     password.set_visibility(False)
-
-    login.set_text(default_username)
     password.set_text(default_password)
-
-    login.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
     password.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
 
-    hbox = gtk.HBox()
-
     vbox_entries = gtk.VBox()
-    vbox_labels = gtk.VBox()
-
-    vbox_labels.pack_start(gtk.Label("Login:"), False, 5, 5)
-    vbox_labels.pack_end(gtk.Label("Password:"), False, 5, 5)
-
     vbox_entries.pack_start(login)
     vbox_entries.pack_end(password)
 
-    dialog.format_secondary_markup("Please enter login and password:")
+    vbox_labels = gtk.VBox()
+    vbox_labels.pack_start(gtk.Label("Login:"), False, 5, 5)
+    vbox_labels.pack_end(gtk.Label("Password:"), False, 5, 5)
+
+    hbox = gtk.HBox()
     hbox.pack_start(vbox_labels, True, True, 0)
     hbox.pack_end(vbox_entries, True, True, 0)
 
@@ -151,7 +148,7 @@ def main(argv=None):
     if args.repeat.lower() == 'true':
         return 1
 
-    response, login_info = login_popup(args.zone, args.hostname, args.realm)
+    response, login_info = login_popup(args.hostname, args.realm)
     if (response != gtk.RESPONSE_OK):
         return 1
 
