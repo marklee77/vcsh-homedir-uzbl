@@ -87,8 +87,10 @@ def login_popup(hostname, realm):
     #    default_username = realm_data[0].get('username', '')
     #    default_password = realm_data[0].get('password', '')
 
-    login = gtk.ComboBoxEntry()
-    login.set_popdown_strings(["user1", "user2", "user3"])
+    login = gtk.combo_box_entry_new_text()
+    login.append_text("user1")
+    login.append_text("user2")
+    login.append_text("user3")
 
     password = gtk.Entry()
     password.set_visibility(False)
@@ -114,15 +116,17 @@ def login_popup(hostname, realm):
     dialog.set_markup('{:s} at {:s}'.format(realm, hostname))
     dialog.format_secondary_markup("Please enter login and password:")
 
-    login.entry.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
+    login.child.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
     password.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
 
     dialog.vbox.pack_start(hbox)
     dialog.show_all()
     response = dialog.run()
 
-    login_info = {'username': login.entry.get_text(),
+    login_info = {'username': login.child.get_text(),
                   'password': password.get_text()}
+
+    print login.get_active()
 
     dialog.destroy()
 
