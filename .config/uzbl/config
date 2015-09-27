@@ -346,6 +346,9 @@ set formfiller = spawn @config_home/scripts/formfiller.py
 @on_event LOAD_COMMIT script @config_home/javascript/formfiller.js
 @on_event LOAD_FINISH @formfiller auto
 
+# view source
+@cbind vs = sh 'urxvtcd -e vim "$UZBL_URI"'
+
 # --- Uzbl tabbed binds ------------------------------------------------------
 
 # Tab opening
