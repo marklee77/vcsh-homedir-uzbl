@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # FIXME: pass default key through uzbl?
+# move load and store out of login_popup to main
 
 import gtk
 import os
@@ -126,7 +127,11 @@ def login_popup(zone, hostname, realm):
     login_info = {'username': login.get_text(),
                   'password': password.get_text()}
 
-    realm_data.append(login_info)
+    if realm_data:
+        realm_data[0] = login_info
+    else:
+        realm_data.append(login_info)
+
     store_auth_data(site_data, hostname)
     dialog.destroy()
 

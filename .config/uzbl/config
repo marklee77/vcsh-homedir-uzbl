@@ -1,5 +1,5 @@
 # === Core settings ==========================================================
-# FIXME: need a view source...
+# FIXME: need a view source...pull up vim as scheme handler...
 # FIXME: figure out all the follow links / clipboard stuff
 # FIXME: mailto links open urxvtcd with mutt
 # FIXME: search highlight color
