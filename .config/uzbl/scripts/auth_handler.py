@@ -79,31 +79,19 @@ def responseToDialog(entry, dialog, response):
 
 def login_popup(hostname, realm):
 
-    site_data = load_auth_data(hostname)
-    realm_data = site_data.setdefault(realm, [])
-    default_username = ''
-    default_password = ''
-    if realm_data:
-        default_username = realm_data[0].get('username', '')
-        default_password = realm_data[0].get('password', '')
-
-    dialog = gtk.MessageDialog(
-        None,
-        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-        gtk.MESSAGE_QUESTION,
-        gtk.BUTTONS_OK_CANCEL,
-        None)
-    dialog.set_markup('{:s} at {:s}'.format(realm, hostname))
-    dialog.format_secondary_markup("Please enter login and password:")
+    #site_data = load_auth_data(hostname)
+    #realm_data = site_data.setdefault(realm, [])
+    #default_username = ''
+    #default_password = ''
+    #if realm_data:
+    #    default_username = realm_data[0].get('username', '')
+    #    default_password = realm_data[0].get('password', '')
 
     login = gtk.Entry()
-    login.set_text(default_username)
-    login.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
-
+    #login.set_text(default_username)
     password = gtk.Entry()
     password.set_visibility(False)
-    password.set_text(default_password)
-    password.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
+    #password.set_text(default_password)
 
     vbox_entries = gtk.VBox()
     vbox_entries.pack_start(login)
@@ -117,20 +105,38 @@ def login_popup(hostname, realm):
     hbox.pack_start(vbox_labels, True, True, 0)
     hbox.pack_end(vbox_entries, True, True, 0)
 
+    listitem = gtk.ListItem("New Entry")
+    combo = gtk.Combo()
+    combo.list.append_items([listitem])
+    listitem.show()
+
+    dialog = gtk.MessageDialog(
+        None,
+        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+        gtk.MESSAGE_QUESTION,
+        gtk.BUTTONS_OK_CANCEL,
+        None)
+    dialog.set_markup('{:s} at {:s}'.format(realm, hostname))
+    dialog.format_secondary_markup("Please enter login and password:")
+
+    login.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
+    password.connect("activate", responseToDialog, dialog, gtk.RESPONSE_OK)
+
     dialog.vbox.pack_start(hbox)
+    dialog.vbox.pack_end(combo)
     dialog.show_all()
     response = dialog.run()
 
     login_info = {'username': login.get_text(),
                   'password': password.get_text()}
 
-    if realm_data:
-        realm_data[0] = login_info
-    else:
-        realm_data.append(login_info)
-
-    store_auth_data(site_data, hostname)
     dialog.destroy()
+
+    #if realm_data:
+    #    realm_data[0] = login_info
+    #else:
+    #    realm_data.append(login_info)
+    #store_auth_data(site_data, hostname)
 
     return response, login_info
 
