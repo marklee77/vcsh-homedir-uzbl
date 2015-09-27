@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # FIXME: pass default key through uzbl?
-# move load and store out of login_popup to main
 
 import gtk
 import os
@@ -151,18 +150,25 @@ def main(argv=None):
     if (response != gtk.RESPONSE_OK):
         return 1
 
+    print username
+    print password
+
     login = {'username': username, 'password': password}
     found = False
     changed = False
     for realm_login in realm_logins:
-    #if realm_data:
-    #    realm_data[0] = login_info
-    #else:
-    #    realm_data.append(login_info)
-    #store_auth_data(site_data, hostname)
+        if realm_login.get('username', None) == username:
+            found = True
+            if realm_login.get('password', None) != password:
+                changed = True
+                realm_login['password'] = password
+            break
 
-    print username
-    print password
+    if not found:
+        realm_logins.append(login)
+
+    if not found or changed:
+        store_auth_data(site_logins, args.hostname)
 
     return 0
 
