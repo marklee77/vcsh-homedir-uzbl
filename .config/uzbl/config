@@ -126,6 +126,9 @@ set ssl_verify = 1
 @cbind  !ssl = chain 'toggle ssl_verify' 'reload'
 @on_event   LOAD_ERROR    js var patt=new RegExp('SSL handshake failed'); if (patt.test('%3')) {alert ('%3');}
 
+# === Proxy related configuration ============================================
+set proxy_url = http://localhost:3128
+
 # === Key binding configuration ==============================================
 # --- Internal modmapping and ignoring ---------------------------------------
 
