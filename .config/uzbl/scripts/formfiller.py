@@ -5,6 +5,7 @@
 #   - form lookup methods: id, name, index, action, other?
 #   - move hint style to css?
 #   - keyringer?
+#   - fix fails if no data loaded
 import gtk
 import json
 import os
@@ -100,7 +101,7 @@ def store_page_data(data, recipients, href, *args):
 
 
 def eval_js(expr, default=None):
-    retval = default
+    retval = None
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(os.environ.get('UZBL_SOCKET', None))
@@ -110,6 +111,9 @@ def eval_js(expr, default=None):
         retval = yaml.load(response.split('\n', 1)[1])
     except:
         pass
+
+    if not retval:
+        retval = default
 
     return retval
 
