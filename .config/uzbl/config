@@ -128,6 +128,7 @@ set ssl_verify = 1
 
 # === Proxy related configuration ============================================
 # FIXME: proxy on by default, but off for socks tunnel targets...
+# set to localhost:4444 for i2p sites
 #set proxy_url = http://localhost:3128
 
 # === Key binding configuration ==============================================
