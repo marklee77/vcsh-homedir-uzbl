@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # FIXME: pass default key through uzbl?
+# FIXME: save checkbox?
 
 import gtk
 import os
