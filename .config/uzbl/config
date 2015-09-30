@@ -127,6 +127,7 @@ set ssl_verify = 1
 @on_event   LOAD_ERROR    js var patt=new RegExp('SSL handshake failed'); if (patt.test('%3')) {alert ('%3');}
 
 # === Proxy related configuration ============================================
+# FIXME: proxy on by default, but off for socks tunnel targets...
 #set proxy_url = http://localhost:3128
 
 # === Key binding configuration ==============================================
