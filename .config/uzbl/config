@@ -339,13 +339,13 @@ set follow_hint_keys = 0123456789abcdef
 @cbind  '*  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followTextContent("%s", 'click') >\@
 
 # form filler
-@on_event LOAD_COMMIT script @config_home/javascript/formfiller.js
-set formfiller = spawn @config_home/scripts/formfiller.py
-@on_event LOAD_FINISH @formfiller auto
-@cbind zl = @formfiller load
-@cbind zs = @formfiller store -r 0xCB8FE39384C1D3F4
-@cbind za = @formfiller append -r 0xCB8FE39384C1D3F4
-@cbind ze = @formfiller edit
+#@on_event LOAD_COMMIT script @config_home/javascript/formfiller.js
+#set formfiller = spawn @config_home/scripts/formfiller.py
+#@on_event LOAD_FINISH @formfiller auto
+#@cbind zl = @formfiller load
+#@cbind zs = @formfiller store -r 0xCB8FE39384C1D3F4
+#@cbind za = @formfiller append -r 0xCB8FE39384C1D3F4
+#@cbind ze = @formfiller edit
 
 # view source
 @cbind vs = sh 'urxvtcd -e vim "$UZBL_URI"'
